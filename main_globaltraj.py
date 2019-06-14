@@ -6,6 +6,7 @@ import json
 import os
 import trajectory_planning_helpers as tph
 import matplotlib.pyplot as plt
+import configparser
 
 """
 Created by:
@@ -25,7 +26,7 @@ This script has to be executed to generate an optimal trajectory based on a give
 file_paths = {}
 
 # choose vehicle parameter file
-file_paths["veh_params_file"] = "racecar.json"
+file_paths["veh_params_file"] = "racecar.ini"
 
 # debug and plot options
 debug = True                                        # console messages
@@ -76,9 +77,18 @@ file_paths["racetraj_export"] = file_paths["module"] + "/outputs/racetraj_cl.csv
 # IMPORT VEHICLE DEPENDENT PARAMETERS ----------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 
-# read vehicle parameter file into a "pars" dict
-with open(file_paths["module"] + "/params/" + file_paths["veh_params_file"], "r") as fh:
-    pars = json.load(fh)
+# load vehicle parameter file into a "pars" dict
+parser = configparser.ConfigParser()
+pars = {}
+
+if not parser.read(file_paths["module"] + "/params/" + file_paths["veh_params_file"]):
+    raise ValueError('Specified config file does not exist or is empty!')
+
+pars["ggv"] = json.loads(parser.get('GGV', 'ggv'))
+pars["stepsizes"] = json.loads(parser.get('OPTIMIZATION_OPTIONS', 'stepsizes'))
+pars["reg_smooth_opts"] = json.loads(parser.get('OPTIMIZATION_OPTIONS', 'reg_smooth_opts'))
+pars["optim_opts"] = json.loads(parser.get('OPTIMIZATION_OPTIONS', 'optim_opts'))
+pars["veh_dims"] = json.loads(parser.get('OPTIMIZATION_OPTIONS', 'veh_dims'))
 
 # set import path for ggv diagram
 file_paths["ggv"] = file_paths["module"] + "/inputs/ggv/" + pars["ggv"]

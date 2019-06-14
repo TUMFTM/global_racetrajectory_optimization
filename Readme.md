@@ -11,7 +11,7 @@ curvature path or the shortest path.
 * `opt_mintime`: This python module contains the functions required to find the minimum time trajectory for 
 a point-mass-model (PM), a one-track-model (ESM) and a two-track-model (ZSM).
 * `outputs`: The calculated race trajectory informations are exported to various csvs in this folder.
-* `params`: This folder contains the vehicle dependent parameter files. They can be generated using the script.
+* `params`: This folder contains the vehicle dependent parameter files.
 * `process_functions`: This folder contains scripts to reduce the code contained in the `main_globtraj.py`.
 
 # Dependencies
@@ -19,11 +19,11 @@ Use the provided `requirements.txt` in the root directory of this repo, in order
 `pip3 install -r /path/to/requirements.txt`
 
 # Running the code
-`main_globaltraj.py` must be executed to start the trajectory generation process.
-
-# Parametrization
-You have to create a proper parameter file using the `create_params.py` script in the params folder. The ggv diagram 
-files can be found and modified in `inputs/ggv`, the reference track files in `inputs/tracks`.
+* `Step 1:` (optional) Adjust the parameter file that can be found in the params folder.
+* `Step 2:` (optional) Adjust the ggv diagram file in `inputs/ggv`.
+* `Step 3:` (optional) Add your own reference track file in `inputs/tracks`.
+* `Step 4:` Check the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 
+generation process.
 
 # Wording and conventions
 We tried to keep a consistant wording for the variable names:

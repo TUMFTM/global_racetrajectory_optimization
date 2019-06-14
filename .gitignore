@@ -125,3 +125,6 @@ dmypy.json
 
 # Pycharm stuff
 .idea
+
+# repo specific stuff
+outputs/*
