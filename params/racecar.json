@@ -1,0 +1,24 @@
+{
+    "ggv": "ggv.txt",
+    "stepsizes": {
+        "stepsize_reg": 3.0,
+        "stepsize_prep": 1.0,
+        "stepsize_interp_after_opt": 2.0
+    },
+    "veh_dims": {
+        "l_veh_real": 4.7,
+        "w_veh_real": 2.0
+    },
+    "optim_opts": {
+        "window_size_conv_filt": 3,
+        "kappa_bound": 0.1,
+        "tire_model_exp": 1.0,
+        "iqp_curv_error_allowed": 0.01,
+        "iqp_iters_min": 3,
+        "w_veh": 3.4
+    },
+    "reg_smooth_opts": {
+        "k_reg": 3,
+        "s_reg": 10
+    }
+}

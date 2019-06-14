@@ -1,0 +1,6 @@
+numpy==1.16.3
+scipy==1.2.1
+cython==0.29.7
+quadprog==0.1.6
+matplotlib==3.0.3
+trajectory_planning_helpers>=0.28
