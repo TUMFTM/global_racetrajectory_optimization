@@ -7,6 +7,7 @@ import os
 import trajectory_planning_helpers as tph
 import matplotlib.pyplot as plt
 import configparser
+import pkg_resources
 
 """
 Created by:
@@ -60,11 +61,30 @@ use_opt_shortest_path = False       # shortest path optimization
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-# INITIALIZATION STUFF -------------------------------------------------------------------------------------------------
+# CHECK PYTHON DEPENDENCIES --------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 
 # get current path
 file_paths["module"] = os.path.dirname(os.path.abspath(__file__))
+
+# read dependencies from requirements.txt
+requirements_path = os.path.join(file_paths["module"], 'requirements.txt')
+dependencies = []
+
+with open(requirements_path, 'r') as fh:
+    line = fh.readline()
+
+    while line:
+        dependencies.append(line.rstrip())
+        line = fh.readline()
+
+# check dependencies
+pkg_resources.require(dependencies)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# INITIALIZATION STUFF -------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
 
 # set together track import path
 file_paths["track"] = file_paths["module"] + "/inputs/tracks/" + file_paths["track_file"]
