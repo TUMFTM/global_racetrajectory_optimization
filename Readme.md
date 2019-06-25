@@ -25,6 +25,8 @@ Use the provided `requirements.txt` in the root directory of this repo, in order
 * `Step 4:` Check the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 
 generation process.
 
+![Resulting raceline on the Berlin FE track](result_berlin.png)
+
 # Wording and conventions
 We tried to keep a consistant wording for the variable names:
 
