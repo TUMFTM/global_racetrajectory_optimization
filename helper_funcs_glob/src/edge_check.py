@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 
 def edge_check(trajectory: np.ndarray,
@@ -44,10 +45,10 @@ def edge_check(trajectory: np.ndarray,
     mat_rot = np.zeros((2, 2))
 
     for i in range(trajectory.shape[0]):
-        mat_rot[0, 0] = np.cos(trajectory[i, 3])
-        mat_rot[0, 1] = -np.sin(trajectory[i, 3])
-        mat_rot[1, 0] = np.sin(trajectory[i, 3])
-        mat_rot[1, 1] = np.cos(trajectory[i, 3])
+        mat_rot[0, 0] = math.cos(trajectory[i, 3])
+        mat_rot[0, 1] = -math.sin(trajectory[i, 3])
+        mat_rot[1, 0] = math.sin(trajectory[i, 3])
+        mat_rot[1, 1] = math.cos(trajectory[i, 3])
 
         # calculate positions of vehicle edges
         fl_ = trajectory[i, 1:3] + np.matmul(mat_rot, fl)

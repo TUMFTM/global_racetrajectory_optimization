@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 
 def interp_track(reftrack: np.ndarray,
@@ -35,7 +36,7 @@ def interp_track(reftrack: np.ndarray,
     dists_cum = np.insert(dists_cum, 0, 0.0)
 
     # calculate desired lenghts depending on specified stepsize (+1 because last element is included)
-    no_points_interp = (np.ceil(dists_cum[-1] / stepsize_approx)).astype(int) + 1
+    no_points_interp = math.ceil(dists_cum[-1] / stepsize_approx) + 1
     dists_interp = np.linspace(0.0, dists_cum[-1], no_points_interp)
 
     # interpolate closed track points

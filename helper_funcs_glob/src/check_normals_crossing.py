@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import trajectory_planning_helpers as tph
 
 
@@ -38,7 +39,7 @@ def check_normals_crossing(reftrack: np.ndarray,
         ind_rel_comp = []  # relevant indices of compared normal vectors
 
         for j, cur_comp_vec in enumerate(normvec_normalized):
-            if not np.isclose(np.cross(normvec_normalized[i], cur_comp_vec), 0.0):
+            if not math.isclose(np.cross(normvec_normalized[i], cur_comp_vec), 0.0):
                 ind_rel_comp.append(j)
 
         # check crossings

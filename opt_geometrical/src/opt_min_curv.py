@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import quadprog
 # import cvxopt
 import time
@@ -263,9 +264,9 @@ def opt_min_curv(reftrack: np.ndarray,
 
     for i in range(no_points):
         curv_orig_lin[i] = (x_prime[i, i] * y_prime_prime[i] - y_prime[i, i] * x_prime_prime[i]) \
-                          / np.power(np.power(x_prime[i, i], 2) + np.power(y_prime[i, i], 2), 1.5)
+                          / math.pow(math.pow(x_prime[i, i], 2) + math.pow(y_prime[i, i], 2), 1.5)
         curv_sol_lin[i] = (x_prime_tmp[i, i] * y_prime_prime[i] - y_prime_tmp[i, i] * x_prime_prime[i]) \
-                           / np.power(np.power(x_prime_tmp[i, i], 2) + np.power(y_prime_tmp[i, i], 2), 1.5)
+                           / math.pow(math.pow(x_prime_tmp[i, i], 2) + math.pow(y_prime_tmp[i, i], 2), 1.5)
 
     if plot_debug:
         plt.plot(curv_orig_lin)

@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import quadprog
 import time
 
@@ -48,11 +49,11 @@ def opt_shortest_path(reftrack: np.ndarray,
 
     for i in range(no_points):
         if i < no_points - 1:
-            H[i, i] += 2 * (np.power(normvectors[i, 0], 2) + np.power(normvectors[i, 1], 2))
+            H[i, i] += 2 * (math.pow(normvectors[i, 0], 2) + math.pow(normvectors[i, 1], 2))
             H[i, i + 1] = 0.5 * 2 * (-2 * normvectors[i, 0] * normvectors[i + 1, 0]
                                      - 2 * normvectors[i, 1] * normvectors[i + 1, 1])
             H[i + 1, i] = H[i, i + 1]
-            H[i + 1, i + 1] = 2 * (np.power(normvectors[i + 1, 0], 2) + np.power(normvectors[i + 1, 1], 2))
+            H[i + 1, i + 1] = 2 * (math.pow(normvectors[i + 1, 0], 2) + math.pow(normvectors[i + 1, 1], 2))
 
             f[i] += 2 * normvectors[i, 0] * reftrack[i, 0] - 2 * normvectors[i, 0] * reftrack[i + 1, 0] \
                     + 2 * normvectors[i, 1] * reftrack[i, 1] - 2 * normvectors[i, 1] * reftrack[i + 1, 1]
@@ -62,10 +63,10 @@ def opt_shortest_path(reftrack: np.ndarray,
                        + 2 * normvectors[i + 1, 1] * reftrack[i + 1, 1]
 
         else:
-            H[i, i] += 2 * (np.power(normvectors[i, 0], 2) + np.power(normvectors[i, 1], 2))
+            H[i, i] += 2 * (math.pow(normvectors[i, 0], 2) + math.pow(normvectors[i, 1], 2))
             H[i, 0] = 0.5 * 2 * (-2 * normvectors[i, 0] * normvectors[0, 0] - 2 * normvectors[i, 1] * normvectors[0, 1])
             H[0, i] = H[i, 0]
-            H[0, 0] += 2 * (np.power(normvectors[0, 0], 2) + np.power(normvectors[0, 1], 2))
+            H[0, 0] += 2 * (math.pow(normvectors[0, 0], 2) + math.pow(normvectors[0, 1], 2))
 
             f[i] += 2 * normvectors[i, 0] * reftrack[i, 0] - 2 * normvectors[i, 0] * reftrack[0, 0] \
                     + 2 * normvectors[i, 1] * reftrack[i, 1] - 2 * normvectors[i, 1] * reftrack[0, 1]
