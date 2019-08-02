@@ -178,7 +178,7 @@ else:
 # ----------------------------------------------------------------------------------------------------------------------
 
 raceline_interp, a_opt, coeffs_x_opt, coeffs_y_opt, spline_inds_opt_interp, t_vals_opt_interp, s_points_opt_interp,\
-    spline_lengths_opt, el_lengths_opt_interp_cl = process_functions.src.interp_raceline.\
+    spline_lengths_opt, el_lengths_opt_interp = process_functions.src.interp_raceline.\
     interp_raceline(stepsize_interp_after_opt=pars["stepsizes"]["stepsize_interp_after_opt"],
                     refline_interp=reftrack_interp[:, :2],
                     alpha_opt=alpha_opt,
@@ -203,25 +203,25 @@ psi_vel_opt, kappa_opt = tph.calc_head_curv_an.\
 
 vx_profile_opt = tph.calc_vel_profile.calc_vel_profile(ggv=ggv,
                                                        kappa=kappa_opt,
-                                                       el_lengths=el_lengths_opt_interp_cl,
-                                                       tire_model_exp=pars["optim_opts"]["tire_model_exp"],
+                                                       el_lengths=el_lengths_opt_interp,
+                                                       dyn_model_exp=pars["optim_opts"]["dyn_model_exp"],
                                                        filt_window=pars["optim_opts"]["window_size_conv_filt"],
                                                        closed=True)
 
 # calculate longitudinal acceleration profile
 vx_profile_opt_cl = np.append(vx_profile_opt, vx_profile_opt[0])
 ax_profile_opt = tph.calc_ax_profile.calc_ax_profile(vx_profile=vx_profile_opt_cl,
-                                                     el_lengths=el_lengths_opt_interp_cl,
+                                                     el_lengths=el_lengths_opt_interp,
                                                      eq_length_output=False)
 
 # calculate laptime
 t_profile_cl = tph.calc_t_profile.calc_t_profile(vx_profile=vx_profile_opt,
                                                  ax_profile=ax_profile_opt,
-                                                 el_lengths=el_lengths_opt_interp_cl)
+                                                 el_lengths=el_lengths_opt_interp)
 print("Laptime: %.2f s" % t_profile_cl[-1])
 
 if plot_opts["velprofile"]:
-    s_points = np.cumsum(el_lengths_opt_interp_cl[:-1])
+    s_points = np.cumsum(el_lengths_opt_interp[:-1])
     s_points = np.insert(s_points, 0, 0.0)
 
     plt.plot(s_points, vx_profile_opt)
