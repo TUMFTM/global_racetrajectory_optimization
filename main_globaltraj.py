@@ -48,7 +48,7 @@ file_paths["track_file"] = "Berlin_2018.csv"
 # set import options
 # Berlin: set_new_start 106.0, 141.0
 imp_opts = {"flip_imp_track": False,                    # flip imported track to reverse direction
-            "set_new_start": True,                      # set new starting point (changes order, not coordinates)
+            "set_new_start": False,                     # set new starting point (changes order, not coordinates)
             "new_start": np.array([106.0, 141.0])}      # [x_m, y_m]
 
 # check normal vector crossings (can take a while)
@@ -90,7 +90,10 @@ pkg_resources.require(dependencies)
 file_paths["track"] = file_paths["module"] + "/inputs/tracks/" + file_paths["track_file"]
 
 # set export paths
-file_paths["racetraj_export"] = file_paths["module"] + "/outputs/racetraj_cl.csv"
+file_paths["traj_race_export"] = file_paths["module"] + "/outputs/traj_race_cl.csv"
+
+# create outputs folder
+os.makedirs(file_paths["module"] + "/outputs", exist_ok=True)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -245,8 +248,8 @@ trajectory_opt = np.column_stack((s_points_opt_interp, raceline_interp, psi_vel_
 spline_data_opt = np.column_stack((spline_lengths_opt, coeffs_x_opt, coeffs_y_opt))
 
 # create a closed race trajectory array
-trajectory_opt_cl = np.vstack((trajectory_opt, trajectory_opt[0, :]))
-trajectory_opt_cl[-1, 0] = np.sum(spline_data_opt[:, 0])  # set correct length
+traj_race_cl = np.vstack((trajectory_opt, trajectory_opt[0, :]))
+traj_race_cl[-1, 0] = np.sum(spline_data_opt[:, 0])  # set correct length
 
 # print end time
 print("Runtime from referenceline import to trajectory export was %.2f s" % (time.perf_counter() - t_start))
@@ -271,7 +274,7 @@ bound1, bound2 = process_functions.src.check_traj.\
 
 # export data to CSV
 process_functions.src.export_traj.export_traj(file_paths=file_paths,
-                                              traj_race=trajectory_opt_cl)
+                                              traj_race=traj_race_cl)
 
 print("\nFinished creation of trajectory:", time.strftime("%H:%M:%S"), "\n")
 

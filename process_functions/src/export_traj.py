@@ -31,15 +31,15 @@ def export_traj(file_paths: dict,
     ggv_hash = hashlib.sha1(ggv_content).hexdigest()
 
     # write UUID and GGV hash into file
-    with open(file_paths["racetraj_export"], 'w') as fh:
+    with open(file_paths["traj_race_export"], 'w') as fh:
         fh.write("# " + rand_uuid + "\n")
         fh.write("# " + ggv_hash + "\n")
 
     # export race trajectory
     header = "s_m; x_m; y_m; psi_rad; kappa_radpm; vx_mps; ax_mps2"
     fmt = "%.7f; %.7f; %.7f; %.7f; %.7f; %.7f; %.7f"
-    with open(file_paths["racetraj_export"], 'ab') as fh:
-        np.savetxt(fh, traj_race, delimiter=";", fmt=fmt, header=header)
+    with open(file_paths["traj_race_export"], 'ab') as fh:
+        np.savetxt(fh, traj_race, fmt=fmt, header=header)
 
 
 # testing --------------------------------------------------------------------------------------------------------------
