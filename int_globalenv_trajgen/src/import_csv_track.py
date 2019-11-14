@@ -6,9 +6,6 @@ def import_csv_track(import_path: str) -> np.ndarray:
     Created by:
     Alexander Heilmeier
 
-    Created on:
-    21.03.2018
-
     Documentation:
     Read csv file containing track information in the format [x, y, w_tr_right, w_tr_left].
 

@@ -9,9 +9,6 @@ def check_normals_crossing(reftrack: np.ndarray,
     Created by:
     Alexander Heilmeier
 
-    Created on:
-    27.04.2018
-
     Documentation:
     Check spline normals for crossing points. Returns True if a crossing was found, otherwise False.
 

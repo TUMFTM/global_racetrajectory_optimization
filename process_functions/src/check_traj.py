@@ -5,9 +5,6 @@ import helper_funcs_glob
 Created by:
 Alexander Heilmeier
 
-Created on:
-22.10.2018
-
 Documentation:
 This function checks the generated trajectory and prints several outputs.
 

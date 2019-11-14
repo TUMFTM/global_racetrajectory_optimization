@@ -1,16 +1,11 @@
 # Python version
-Our code is tested with Python >= 3.5.2
+Our code is tested with Python >= 3.7.4
 
 # List of components
 * `helper_funcs_glob`: This python module contains some helper functions used in several other functions when 
 calculating the global race trajectory.
 * `inputs`: This folder contains the ggv diagrams and reference track csvs for the global race trajectory.
 * `int_globalenv_trajgen`: This python module contains a function to import the track csvs in the inputs folder.
-* `opt_geometrical`: This python module contains the optimization functions required to find either the minimum 
-curvature path or the shortest path.
-* `opt_mintime`: This python module contains the functions required to find the minimum time trajectory for 
-a point-mass-model (PM), a one-track-model (ESM) and a two-track-model (ZSM).
-* `outputs`: The calculated race trajectory informations are exported to various csvs in this folder.
 * `params`: This folder contains the vehicle dependent parameter files.
 * `process_functions`: This folder contains scripts to reduce the code contained in the `main_globtraj.py`.
 
@@ -22,15 +17,15 @@ Use the provided `requirements.txt` in the root directory of this repo, in order
 * `Step 1:` (optional) Adjust the parameter file that can be found in the params folder.
 * `Step 2:` (optional) Adjust the ggv diagram file in `inputs/ggv`.
 * `Step 3:` (optional) Add your own reference track file in `inputs/tracks`.
-* `Step 4:` Check the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 
-generation process.
+* `Step 4:` Check the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory
+generation process. The calculated race trajectory can be found in `outputs/`.
 
 ![Resulting raceline for the Berlin FE track](opt_raceline_berlin.png)
 
 # Wording and conventions
 We tried to keep a consistant wording for the variable names:
 
-path -> [x, y] Describes an array containing points (i.e. point coordinates).\
+path -> [x, y] Describes any array containing x,y coordinates of points (i.e. point coordinates).\
 refline -> [x, y] A path that is used as reference line during our calculations.\
 reftrack -> [x, y, w_tr_right, w_tr_left] An array that contains not only the reference line information but also right
 and left track widths. In our case it contains the race track that is used as a basis for the raceline optimization.

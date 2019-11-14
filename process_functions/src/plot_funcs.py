@@ -7,9 +7,6 @@ import trajectory_planning_helpers
 Created by:
 Alexander Heilmeier
 
-Created on:
-22.10.2018
-
 Documentation:
 This function plots several diagrams after trajectory optimization.
 

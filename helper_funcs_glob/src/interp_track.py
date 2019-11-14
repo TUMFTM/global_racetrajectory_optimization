@@ -8,9 +8,6 @@ def interp_track(reftrack: np.ndarray,
     Created by:
     Alexander Heilmeier
 
-    Created on:
-    19.01.2018
-
     Documentation:
     Use linear interpolation between track points to create new points with equal distances.
 

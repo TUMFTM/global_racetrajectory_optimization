@@ -11,9 +11,6 @@ def edge_check(trajectory: np.ndarray,
     Created by:
     Alexander Heilmeier
 
-    Created on:
-    05.05.2018
-
     Documentation:
     Calculate minimum distance between vehicle and track boundaries for every trajectory point. Vehicle dimensions are
     taken into account for this calculation. Vehicle orientation is assumed to be the same as the heading of the

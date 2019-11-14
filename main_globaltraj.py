@@ -12,9 +12,6 @@ import pkg_resources
 Created by:
 Alexander Heilmeier
 
-Created on:
-31.01.2019
-
 Documentation:
 This script has to be executed to generate an optimal trajectory based on a given reference track.
 """

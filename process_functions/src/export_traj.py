@@ -6,9 +6,6 @@ import hashlib
 Created by:
 Alexander Heilmeier
 
-Created on:
-22.10.2018
-
 Documentation:
 This function is used to export the generated trajectory into several files for further usage in the local trajectory
 planner.
