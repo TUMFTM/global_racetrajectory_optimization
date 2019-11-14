@@ -1,4 +1,3 @@
-import opt_geometrical
 import process_functions
 import numpy as np
 import time
@@ -145,16 +144,16 @@ reftrack_interp, normvec_normalized_interp, a_interp, coeffs_x_interp, coeffs_y_
 # ----------------------------------------------------------------------------------------------------------------------
 
 if use_opt_mincurv:
-    alpha_opt = opt_geometrical.src.opt_min_curv.opt_min_curv(reftrack=reftrack_interp,
-                                                              normvectors=normvec_normalized_interp,
-                                                              A=a_interp,
-                                                              kappa_bound=pars["optim_opts"]["kappa_bound"],
-                                                              w_veh=pars["optim_opts"]["w_veh"],
-                                                              print_debug=debug,
-                                                              plot_debug=plot_opts["opt_min_curv"])[0]
+    alpha_opt = tph.opt_min_curv.opt_min_curv(reftrack=reftrack_interp,
+                                              normvectors=normvec_normalized_interp,
+                                              A=a_interp,
+                                              kappa_bound=pars["optim_opts"]["kappa_bound"],
+                                              w_veh=pars["optim_opts"]["w_veh"],
+                                              print_debug=debug,
+                                              plot_debug=plot_opts["opt_min_curv"])[0]
 
 elif use_opt_mincurv_iqp:
-    alpha_opt, reftrack_interp, normvec_normalized_interp = process_functions.src.iqp_handler.\
+    alpha_opt, reftrack_interp, normvec_normalized_interp = tph.iqp_handler.\
         iqp_handler(reftrack=reftrack_interp,
                     normvectors=normvec_normalized_interp,
                     A=a_interp,
@@ -162,15 +161,15 @@ elif use_opt_mincurv_iqp:
                     w_veh=pars["optim_opts"]["w_veh"],
                     print_debug=debug,
                     plot_debug=plot_opts["opt_min_curv"],
-                    stepsize_reg=pars["stepsizes"]["stepsize_reg"],
+                    stepsize_interp=pars["stepsizes"]["stepsize_reg"],
                     iters_min=pars["optim_opts"]["iqp_iters_min"],
                     curv_error_allowed=pars["optim_opts"]["iqp_curv_error_allowed"])
 
 elif use_opt_shortest_path:
-    alpha_opt = opt_geometrical.src.opt_shortest_path.opt_shortest_path(reftrack=reftrack_interp,
-                                                                        normvectors=normvec_normalized_interp,
-                                                                        w_veh=pars["optim_opts"]["w_veh"],
-                                                                        print_debug=debug)
+    alpha_opt = tph.opt_shortest_path.opt_shortest_path(reftrack=reftrack_interp,
+                                                        normvectors=normvec_normalized_interp,
+                                                        w_veh=pars["optim_opts"]["w_veh"],
+                                                        print_debug=debug)
 
 else:
     alpha_opt = np.zeros(reftrack_interp.shape[0])
@@ -181,11 +180,11 @@ else:
 # ----------------------------------------------------------------------------------------------------------------------
 
 raceline_interp, a_opt, coeffs_x_opt, coeffs_y_opt, spline_inds_opt_interp, t_vals_opt_interp, s_points_opt_interp,\
-    spline_lengths_opt, el_lengths_opt_interp = process_functions.src.interp_raceline.\
-    interp_raceline(stepsize_interp_after_opt=pars["stepsizes"]["stepsize_interp_after_opt"],
-                    refline_interp=reftrack_interp[:, :2],
-                    alpha_opt=alpha_opt,
-                    normvec_normalized_interp=normvec_normalized_interp)
+    spline_lengths_opt, el_lengths_opt_interp = tph.create_raceline.\
+    create_raceline(refline=reftrack_interp[:, :2],
+                    normvectors=normvec_normalized_interp,
+                    alpha=alpha_opt,
+                    stepsize_interp=pars["stepsizes"]["stepsize_interp_after_opt"])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
