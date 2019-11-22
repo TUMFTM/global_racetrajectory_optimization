@@ -51,11 +51,11 @@ def check_traj(reftrack: np.ndarray,
     # warn if distance falls below a safety margin of 1.0 m
     if min_dist < 1.0:
         print(
-            "WARNING: Minimum distance to boundaries is estimated to %.2f m. Keep in mind that the distance can also"
+            "WARNING: Minimum distance to boundaries is estimated to %.2fm. Keep in mind that the distance can also"
             " lie on the outside of the track!" % min_dist)
     elif debug:
         print(
-            "Minimum distance to boundaries is estimated to %.2f m. Keep in mind that the distance can also lie on the"
+            "Minimum distance to boundaries is estimated to %.2fm. Keep in mind that the distance can also lie on the"
             " outside of the track!" % min_dist)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ def check_traj(reftrack: np.ndarray,
 
     # check maximum (absolute) curvature (with a small buffer)
     if np.amax(np.abs(trajectory_opt[:, 4])) > 0.13:
-        print("WARNING: Curvature limit is exceeded: %.3f radpm" % np.amax(np.abs(trajectory_opt[:, 4])))
+        print("WARNING: Curvature limit is exceeded: %.3frad/m" % np.amax(np.abs(trajectory_opt[:, 4])))
 
     # transform curvature kappa into corresponding radii (abs because curvature has a sign in our convention)
     radii = np.abs(np.divide(1, trajectory_opt[:, 4], out=np.full(trajectory_opt.shape[0], np.inf),
@@ -74,22 +74,22 @@ def check_traj(reftrack: np.ndarray,
     ay_profile = np.divide(np.power(trajectory_opt[:, 5], 2), radii)
 
     if np.amax(ay_profile) > np.amax(np.abs(ggv[:, 4])) + 2.0:
-        print("WARNING: Lateral acceleration limit is exceeded: %.2f mps2" % np.amax(ay_profile))
+        print("WARNING: Lateral acceleration limit is exceeded: %.2fm/s2" % np.amax(ay_profile))
 
     # check max longitudinal accelerations (with a small buffer)
     if np.amax(trajectory_opt[:, 6]) > np.amax(ggv[:, 2]) + 2.0:
-        print("WARNING: Longitudinal acceleration limit (positive) is exceeded: %.2f mps2" % np.amax(
+        print("WARNING: Longitudinal acceleration limit (positive) is exceeded: %.2fm/s2" % np.amax(
             trajectory_opt[:, 6]))
 
     if np.amin(trajectory_opt[:, 6]) < np.amin(ggv[:, 3]) - 2.0:
-        print("WARNING: Longitudinal acceleration limit (negative) is exceeded: %.2f mps2" % np.amin(
+        print("WARNING: Longitudinal acceleration limit (negative) is exceeded: %.2fm/s2" % np.amin(
             trajectory_opt[:, 6]))
 
     # check Kamm'scher Kreis (with a small buffer)
     a_tot = np.sqrt(np.power(trajectory_opt[:, 6], 2) + np.power(ay_profile, 2))
 
     if np.amax(a_tot) > np.amax(np.abs(ggv[:, 2:])) + 2.0:
-        print("WARNING: Total acceleration limit is exceeded: %.2f mps2" % np.amax(a_tot))
+        print("WARNING: Total acceleration limit is exceeded: %.2fm/s2" % np.amax(a_tot))
 
     return bound1, bound2
 

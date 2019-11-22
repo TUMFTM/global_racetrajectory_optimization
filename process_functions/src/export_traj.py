@@ -12,7 +12,7 @@ planner.
 
 The process_functions folder only contains functions that are used to outsource code snippets from the main script.
 Therefore, these functions cannot be seen as independent functional units and their inputs and outputs are undocumented.
-Please have a look into the main_globaltraj.py script to understand inputs and outputs..
+Please have a look into the main_globaltraj.py script to understand inputs and outputs.
 """
 
 

@@ -37,7 +37,7 @@ def imp_track_ggv(imp_opts: dict,
     w_tr_min = np.amin(reftrack_imp[:, 2] + reftrack_imp[:, 3])
 
     if w_tr_min < veh_dims["w_veh_real"] + 0.5:
-        print("Warning: Minimum track width %.2f m is close to or smaller than vehicle width!" % np.amin(w_tr_min))
+        print("Warning: Minimum track width %.2fm is close to or smaller than vehicle width!" % np.amin(w_tr_min))
 
     # import ggv diagram
     ggv = trajectory_planning_helpers.import_ggv.import_ggv(ggv_import_path=file_paths["ggv"])

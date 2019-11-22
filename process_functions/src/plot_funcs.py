@@ -31,8 +31,8 @@ def plot_funcs(plot_opts: dict,
 
         raceline_interp = trajectory_opt[:, 1:3]
 
-        veh_bound1_virt = raceline_interp + normvec_normalized_opt * optim_opts["w_veh"] / 2
-        veh_bound2_virt = raceline_interp - normvec_normalized_opt * optim_opts["w_veh"] / 2
+        veh_bound1_virt = raceline_interp + normvec_normalized_opt * optim_opts["w_veh_opt"] / 2
+        veh_bound2_virt = raceline_interp - normvec_normalized_opt * optim_opts["w_veh_opt"] / 2
 
         veh_bound1_real = raceline_interp + normvec_normalized_opt * veh_dims["w_veh_real"] / 2
         veh_bound2_real = raceline_interp - normvec_normalized_opt * veh_dims["w_veh_real"] / 2
@@ -66,7 +66,7 @@ def plot_funcs(plot_opts: dict,
         plt.plot(trajectory_opt[:, 0], trajectory_opt[:, 4])
         plt.grid()
         plt.xlabel("distance in m")
-        plt.ylabel("curvature in radpm")
+        plt.ylabel("curvature in rad/m")
         plt.legend(["kappa after opt"])
         plt.show()
 
