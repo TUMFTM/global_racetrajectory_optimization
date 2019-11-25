@@ -1,4 +1,3 @@
-import process_functions
 import numpy as np
 import time
 import json
@@ -7,6 +6,7 @@ import trajectory_planning_helpers as tph
 import matplotlib.pyplot as plt
 import configparser
 import pkg_resources
+import helper_funcs_glob
 
 """
 Created by:
@@ -24,15 +24,14 @@ This script has to be executed to generate an optimal trajectory based on a give
 file_paths = {"veh_params_file": "racecar.ini"}
 
 # debug and plot options
-debug = True                                        # console messages
-plot_opts = {"opt_min_curv": False,                 # plot curvature based on original linearization and solution based
-             "raceline": True,                      # plot optimized path
-             "curv_profile": True,                  # plot curvature profile
-             "velprofile": True,                    # plot velocity profile
-             "velprofile_3d": False,                # plot 3D velocity profile above raceline
-             "velprofile_3d_stepsize": 1.0,         # [m] vertical lines stepsize in 3D velocity profile plot
-             "spline_normals": False,               # plot spline normals
-             "mintime": False}                      # plot states, controls, tire forces if opt_mintime = True
+debug = True                                    # print console messages
+plot_opts = {"mincurv_curv_lin": False,         # plot curv. linearization (original and solution based) (mincurv only)
+             "raceline": True,                  # plot optimized path
+             "raceline_curv": True,             # plot curvature profile of optimized path
+             "racetraj_vel": True,              # plot velocity profile
+             "racetraj_vel_3d": False,          # plot 3D velocity profile above raceline
+             "racetraj_vel_3d_stepsize": 1.0,   # [m] vertical lines stepsize in 3D velocity profile plot
+             "spline_normals": False}           # plot spline normals
 
 # select track file (including centerline coords + track widths)
 file_paths["track_file"] = "berlin_2018.csv"
@@ -123,17 +122,20 @@ file_paths["ggv"] = file_paths["module"] + "/inputs/ggv/" + pars["ggv"]
 # save start time
 t_start = time.perf_counter()
 
-reftrack_imp, ggv = process_functions.src.imp_track_ggv.imp_track_ggv(imp_opts=imp_opts,
-                                                                      file_paths=file_paths,
-                                                                      veh_dims=pars["veh_dims"])
+reftrack_imp = helper_funcs_glob.src.import_track.import_track(imp_opts=imp_opts,
+                                                               file_path=file_paths["track"],
+                                                               veh_dims=pars["veh_dims"])
+
+ggv = tph.import_ggv.import_ggv(ggv_import_path=file_paths["ggv"])
 
 # ----------------------------------------------------------------------------------------------------------------------
 # PREPARE REFTRACK -----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 
 reftrack_interp, normvec_normalized_interp, a_interp, coeffs_x_interp, coeffs_y_interp = \
-    process_functions.src.prep_track.prep_track(reftrack_imp=reftrack_imp,
-                                                pars=pars,
+    helper_funcs_glob.src.prep_track.prep_track(reftrack_imp=reftrack_imp,
+                                                reg_smooth_opts=pars["reg_smooth_opts"],
+                                                stepsizes=pars["stepsizes"],
                                                 debug=debug,
                                                 check_normal_crossings=check_normal_crossings)
 
@@ -148,7 +150,7 @@ if opt_type == 'mincurv':
                                               kappa_bound=pars["optim_opts"]["kappa_bound"],
                                               w_veh=pars["optim_opts"]["w_veh_opt"],
                                               print_debug=debug,
-                                              plot_debug=plot_opts["opt_min_curv"])[0]
+                                              plot_debug=plot_opts["mincurv_curv_lin"])[0]
 
 elif opt_type == 'mincurv_iqp':
     alpha_opt, reftrack_interp, normvec_normalized_interp = tph.iqp_handler.\
@@ -158,7 +160,7 @@ elif opt_type == 'mincurv_iqp':
                     kappa_bound=pars["optim_opts"]["kappa_bound"],
                     w_veh=pars["optim_opts"]["w_veh_opt"],
                     print_debug=debug,
-                    plot_debug=plot_opts["opt_min_curv"],
+                    plot_debug=plot_opts["mincurv_curv_lin"],
                     stepsize_interp=pars["stepsizes"]["stepsize_reg"],
                     iters_min=pars["optim_opts"]["iqp_iters_min"],
                     curv_error_allowed=pars["optim_opts"]["iqp_curv_error_allowed"])
@@ -217,7 +219,7 @@ t_profile_cl = tph.calc_t_profile.calc_t_profile(vx_profile=vx_profile_opt,
                                                  el_lengths=el_lengths_opt_interp)
 print("Laptime: %.2fs" % t_profile_cl[-1])
 
-if plot_opts["velprofile"]:
+if plot_opts["racetraj_vel"]:
     s_points = np.cumsum(el_lengths_opt_interp[:-1])
     s_points = np.insert(s_points, 0, 0.0)
 
@@ -251,12 +253,12 @@ print("Runtime from referenceline import to trajectory export was %.2fs" % (time
 # CHECK TRAJECTORY -----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 
-bound1, bound2 = process_functions.src.check_traj.\
+bound1, bound2 = helper_funcs_glob.src.check_traj.\
     check_traj(reftrack=reftrack_interp,
                reftrack_normvec_normalized=normvec_normalized_interp,
                veh_dims=pars["veh_dims"],
                debug=debug,
-               trajectory_opt=trajectory_opt,
+               trajectory=trajectory_opt,
                ggv=ggv)
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -264,7 +266,7 @@ bound1, bound2 = process_functions.src.check_traj.\
 # ----------------------------------------------------------------------------------------------------------------------
 
 # export data to CSV
-process_functions.src.export_traj.export_traj(file_paths=file_paths,
+helper_funcs_glob.src.export_traj.export_traj(file_paths=file_paths,
                                               traj_race=traj_race_cl)
 
 print("\nFinished creation of trajectory:", time.strftime("%H:%M:%S"), "\n")
@@ -273,10 +275,10 @@ print("\nFinished creation of trajectory:", time.strftime("%H:%M:%S"), "\n")
 # PLOT RESULTS ---------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 
-process_functions.src.plot_funcs.plot_funcs(plot_opts=plot_opts,
-                                            optim_opts=pars["optim_opts"],
-                                            veh_dims=pars["veh_dims"],
-                                            refline_interp=reftrack_interp[:, :2],
-                                            bound1=bound1,
-                                            bound2=bound2,
-                                            trajectory_opt=trajectory_opt)
+helper_funcs_glob.src.result_plots.result_plots(plot_opts=plot_opts,
+                                                w_veh_opt=pars["optim_opts"]["w_veh_opt"],
+                                                w_veh_real=pars["veh_dims"]["w_veh_real"],
+                                                refline=reftrack_interp[:, :2],
+                                                bound1=bound1,
+                                                bound2=bound2,
+                                                trajectory=trajectory_opt)

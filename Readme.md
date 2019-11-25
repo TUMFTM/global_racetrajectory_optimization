@@ -5,9 +5,7 @@ Our code is tested with Python >= 3.7.4
 * `helper_funcs_glob`: This python module contains some helper functions used in several other functions when 
 calculating the global race trajectory.
 * `inputs`: This folder contains the ggv diagrams and reference track csvs for the global race trajectory.
-* `int_globalenv_trajgen`: This python module contains a function to import the track csvs in the inputs folder.
 * `params`: This folder contains the vehicle dependent parameter files.
-* `process_functions`: This folder contains scripts to reduce the code contained in the `main_globtraj.py`.
 
 # Dependencies
 Use the provided `requirements.txt` in the root directory of this repo, in order to install all required modules.\

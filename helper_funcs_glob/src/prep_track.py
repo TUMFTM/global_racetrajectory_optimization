@@ -2,34 +2,45 @@ import numpy as np
 import helper_funcs_glob
 import trajectory_planning_helpers
 
-"""
-Created by:
-Alexander Heilmeier
-
-Documentation:
-This function prepares the inserted reference track for optimization.
-
-The process_functions folder only contains functions that are used to outsource code snippets from the main script.
-Therefore, these functions cannot be seen as independent functional units and their inputs and outputs are undocumented.
-Please have a look into the main_globaltraj.py script to understand inputs and outputs.
-"""
-
 
 def prep_track(reftrack_imp: np.ndarray,
-               pars: dict,
-               debug: bool,
-               check_normal_crossings: bool) -> tuple:
+               reg_smooth_opts: dict,
+               stepsizes: dict,
+               debug: bool = True,
+               check_normal_crossings: bool = False) -> tuple:
+    """
+    Created by:
+    Alexander Heilmeier
+
+    Documentation:
+    This function prepares the inserted reference track for optimization.
+
+    Inputs:
+    reftrack_imp:               imported track [x_m, y_m, w_tr_right_m, w_tr_left_m]
+    reg_smooth_opts:            parameters for the spline approximation
+    stepsizes:                  dict containing the stepsizes before spline approximation and after spline interpolation
+    debug:                      boolean showing if debug messages should be printed
+    check_normal_crossings:     boolean showing if spline normals should be checked for crossing points (takes a while)
+
+    Outputs:
+    reftrack_interp:            track after smoothing and interpolation [x_m, y_m, w_tr_right_m, w_tr_left_m]
+    normvec_normalized_interp:  normalized normal vectors on the reference line [x_m, y_m]
+    a_interp:                   LES coefficients when calculating the splines
+    coeffs_x_interp:            spline coefficients of the x-component
+    coeffs_y_interp:            spline coefficients of the y-component
+    """
 
     # ------------------------------------------------------------------------------------------------------------------
     # INTERPOLATE REFTRACK AND CALCULATE INITIAL SPLINES ---------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
 
+    # smoothing and interpolating reference track
     reftrack_interp = trajectory_planning_helpers.spline_approximation. \
         spline_approximation(track=reftrack_imp,
-                             k_reg=pars["reg_smooth_opts"]["k_reg"],
-                             s_reg=pars["reg_smooth_opts"]["s_reg"],
-                             stepsize_prep=pars["stepsizes"]["stepsize_prep"],
-                             stepsize_reg=pars["stepsizes"]["stepsize_reg"],
+                             k_reg=reg_smooth_opts["k_reg"],
+                             s_reg=reg_smooth_opts["s_reg"],
+                             stepsize_prep=stepsizes["stepsize_prep"],
+                             stepsize_reg=stepsizes["stepsize_reg"],
                              debug=debug)
 
     # calculate splines
@@ -48,7 +59,7 @@ def prep_track(reftrack_imp: np.ndarray,
             check_normals_crossing(reftrack=reftrack_interp, normvec_normalized=normvec_normalized_interp)
 
         if normals_crossing:
-            raise IOError("At least two spline normals have a crossing point!")
+            raise IOError("At least two spline normals are crossed, check input or increase smoothing factor!")
 
     return reftrack_interp, normvec_normalized_interp, a_interp, coeffs_x_interp, coeffs_y_interp
 

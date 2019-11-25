@@ -2,22 +2,22 @@ import numpy as np
 import uuid
 import hashlib
 
-"""
-Created by:
-Alexander Heilmeier
-
-Documentation:
-This function is used to export the generated trajectory into several files for further usage in the local trajectory
-planner.
-
-The process_functions folder only contains functions that are used to outsource code snippets from the main script.
-Therefore, these functions cannot be seen as independent functional units and their inputs and outputs are undocumented.
-Please have a look into the main_globaltraj.py script to understand inputs and outputs.
-"""
-
 
 def export_traj(file_paths: dict,
                 traj_race: np.ndarray):
+    """
+    Created by:
+    Alexander Heilmeier
+
+    Documentation:
+    This function is used to export the generated trajectory into several files for further usage in the local
+    trajectory planner on the car. The generated files get an unique UUID and a hash of the ggv diagram to be able to
+    check it later.
+
+    Inputs:
+    file_paths:     paths for input and output files {ggv, traj_race_export, traj_ltpl_export, lts_export}
+    traj_race:      race trajectory [s_m, x_m, y_m, psi_rad, kappa_radpm, vx_mps, ax_mps2]
+    """
 
     # create random UUID
     rand_uuid = str(uuid.uuid4())
