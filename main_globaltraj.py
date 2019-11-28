@@ -34,9 +34,9 @@ plot_opts = {"mincurv_curv_lin": False,         # plot curv. linearization (orig
              "spline_normals": False}           # plot spline normals
 
 # select track file (including centerline coords + track widths)
-file_paths["track_file"] = "berlin_2018.csv"
-# file_paths["track_file"] = "handling_track.csv"
-# file_paths["track_file"] = "rounded_rectangle.csv"
+file_paths["track_name"] = "berlin_2018"
+# file_paths["track_name"] = "handling_track"
+# file_paths["track_name"] = "rounded_rectangle"
 
 # set import options
 # berlin_2018: set_new_start 106.0, 141.0
@@ -79,7 +79,7 @@ pkg_resources.require(dependencies)
 # ----------------------------------------------------------------------------------------------------------------------
 
 # set together track import path
-file_paths["track"] = file_paths["module"] + "/inputs/tracks/" + file_paths["track_file"]
+file_paths["track_file"] = os.path.join(file_paths["module"], "inputs", "tracks", file_paths["track_name"] + '.csv')
 
 # set export paths
 file_paths["traj_race_export"] = file_paths["module"] + "/outputs/traj_race_cl.csv"
@@ -123,7 +123,7 @@ file_paths["ggv"] = file_paths["module"] + "/inputs/ggv/" + pars["ggv"]
 t_start = time.perf_counter()
 
 reftrack_imp = helper_funcs_glob.src.import_track.import_track(imp_opts=imp_opts,
-                                                               file_path=file_paths["track"],
+                                                               file_path=file_paths["track_file"],
                                                                veh_dims=pars["veh_dims"])
 
 ggv = tph.import_ggv.import_ggv(ggv_import_path=file_paths["ggv"])
