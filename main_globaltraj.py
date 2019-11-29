@@ -205,9 +205,11 @@ vx_profile_opt = tph.calc_vel_profile.\
     calc_vel_profile(ggv=ggv,
                      kappa=kappa_opt,
                      el_lengths=el_lengths_opt_interp,
-                     dyn_model_exp=pars["vel_calc_opts"]["dyn_model_exp"],
+                     closed=True,
                      filt_window=pars["vel_calc_opts"]["vel_profile_conv_filt_window"],
-                     closed=True)
+                     dyn_model_exp=pars["vel_calc_opts"]["dyn_model_exp"],
+                     drag_coeff=pars["veh_params"]["dragcoeff"],
+                     m_veh=pars["veh_params"]["mass"])
 
 # calculate longitudinal acceleration profile
 vx_profile_opt_cl = np.append(vx_profile_opt, vx_profile_opt[0])
