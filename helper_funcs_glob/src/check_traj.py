@@ -6,8 +6,12 @@ def check_traj(reftrack: np.ndarray,
                reftrack_normvec_normalized: np.ndarray,
                trajectory: np.ndarray,
                ggv: np.ndarray,
-               veh_dims: dict,
-               debug: bool) -> tuple:
+               length_veh: float,
+               width_veh: float,
+               debug: bool,
+               dragcoeff: float,
+               mass_veh: float,
+               curvlim: float) -> tuple:
     """
     Created by:
     Alexander Heilmeier
@@ -21,8 +25,12 @@ def check_traj(reftrack: np.ndarray,
     reftrack_normvec_normalized: normalized normal vectors on the reference line [x_m, y_m]
     trajectory:     trajectory to be checked [s_m, x_m, y_m, psi_rad, kappa_radpm, vx_mps, ax_mps2]
     ggv:            ggv diagram [v_mps, ax_max_machines_mps2, ax_max_tires_mps2, ax_min_tires_mps2, ay_max_tires_mps2]
-    veh_dims:       vehicle dimensions in m {l_veh_real, w_veh_real}
+    length_veh:     vehicle length in m
+    width_veh:      vehicle width in m
     debug:          boolean showing if debug messages should be printed
+    dragcoeff:      [m2*kg/m3] drag coefficient containing c_w_A * rho_air * 0.5
+    mass_veh:       [kg] mass
+    curvlim:        [rad/m] maximum drivable curvature
 
     Outputs:
     bound_r:        right track boundary [x_m, y_m]
@@ -41,17 +49,17 @@ def check_traj(reftrack: np.ndarray,
     bound_r_tmp = np.column_stack((bound_r, np.zeros((bound_r.shape[0], 2))))
     bound_l_tmp = np.column_stack((bound_l, np.zeros((bound_l.shape[0], 2))))
 
-    bound_r_check = helper_funcs_glob.src.interp_track.interp_track(reftrack=bound_r_tmp,
-                                                                    stepsize_approx=1.0)[0]
-    bound_l_check = helper_funcs_glob.src.interp_track.interp_track(reftrack=bound_l_tmp,
-                                                                    stepsize_approx=1.0)[0]
+    bound_r_interp = helper_funcs_glob.src.interp_track.interp_track(reftrack=bound_r_tmp,
+                                                                     stepsize_approx=1.0)[0]
+    bound_l_interp = helper_funcs_glob.src.interp_track.interp_track(reftrack=bound_l_tmp,
+                                                                     stepsize_approx=1.0)[0]
 
     # calculate minimum distances of every trajectory point to the boundaries
     min_dists = helper_funcs_glob.src.calc_min_bound_dists.calc_min_bound_dists(trajectory=trajectory,
-                                                                                bound1=bound_r_check,
-                                                                                bound2=bound_l_check,
-                                                                                l_veh_real=veh_dims["l_veh_real"],
-                                                                                w_veh_real=veh_dims["w_veh_real"])
+                                                                                bound1=bound_r_interp,
+                                                                                bound2=bound_l_interp,
+                                                                                length_veh=length_veh,
+                                                                                width_veh=width_veh)
 
     # calculate overall minimum distance
     min_dist = np.amin(min_dists)
@@ -70,8 +78,8 @@ def check_traj(reftrack: np.ndarray,
     # CHECK FINAL TRAJECTORY FOR MAXIMUM CURVATURE AND ACCELERATIONS ---------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
 
-    # check maximum (absolute) curvature (with a small buffer)
-    if np.amax(np.abs(trajectory[:, 4])) > 0.13:
+    # check maximum (absolute) curvature
+    if np.amax(np.abs(trajectory[:, 4])) > curvlim:
         print("WARNING: Curvature limit is exceeded: %.3frad/m" % np.amax(np.abs(trajectory[:, 4])))
 
     # transform curvature kappa into corresponding radii (abs because curvature has a sign in our convention)
@@ -79,25 +87,28 @@ def check_traj(reftrack: np.ndarray,
                              out=np.full(trajectory.shape[0], np.inf),
                              where=trajectory[:, 4] != 0))
 
-    # check max. lateral accelerations (with a small buffer)
+    # check max. lateral accelerations
     ay_profile = np.divide(np.power(trajectory[:, 5], 2), radii)
 
-    if np.amax(ay_profile) > np.amax(np.abs(ggv[:, 4])) + 1.0:
+    if np.amax(ay_profile) > np.amax(np.abs(ggv[:, 4])) + 0.1:
         print("WARNING: Lateral acceleration limit is exceeded: %.2fm/s2" % np.amax(ay_profile))
 
-    # check max. longitudinal accelerations (with a small buffer)
-    if np.amax(trajectory[:, 6]) > np.amax(ggv[:, 2]) + 1.0:
+    # check max. longitudinal accelerations (consider that drag is included in the velocity profile!)
+    ax_drag = -np.power(trajectory[:, 5], 2) * dragcoeff / mass_veh
+    ax_wo_drag = trajectory[:, 6] - ax_drag
+
+    if np.amax(ax_wo_drag) > np.amax(ggv[:, 2]) + 0.1:
         print("WARNING: Longitudinal acceleration limit (positive) is exceeded: %.2fm/s2"
-              % np.amax(trajectory[:, 6]))
+              % np.amax(ax_wo_drag))
 
-    if np.amin(trajectory[:, 6]) < np.amin(ggv[:, 3]) - 1.0:
+    if np.amin(ax_wo_drag) < np.amin(ggv[:, 3]) - 0.1:
         print("WARNING: Longitudinal acceleration limit (negative) is exceeded: %.2fm/s2"
-              % np.amin(trajectory[:, 6]))
+              % np.amin(ax_wo_drag))
 
-    # check total acceleration (with a small buffer)
-    a_tot = np.sqrt(np.power(trajectory[:, 6], 2) + np.power(ay_profile, 2))
+    # check total acceleration
+    a_tot = np.sqrt(np.power(ax_wo_drag, 2) + np.power(ay_profile, 2))
 
-    if np.amax(a_tot) > np.amax(np.abs(ggv[:, 2:])) + 1.0:
+    if np.amax(a_tot) > np.amax(np.abs(ggv[:, 2:])) + 0.1:
         print("WARNING: Total acceleration limit is exceeded: %.2fm/s2" % np.amax(a_tot))
 
     return bound_r, bound_l

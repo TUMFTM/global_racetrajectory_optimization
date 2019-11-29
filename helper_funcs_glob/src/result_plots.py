@@ -5,8 +5,8 @@ import trajectory_planning_helpers
 
 
 def result_plots(plot_opts: dict,
-                 w_veh_opt: float,
-                 w_veh_real: float,
+                 width_veh_opt: float,
+                 width_veh_real: float,
                  refline: np.ndarray,
                  bound1: np.ndarray,
                  bound2: np.ndarray,
@@ -20,8 +20,8 @@ def result_plots(plot_opts: dict,
 
     Inputs:
     plot_opts:      dict containing the information which figures to plot
-    w_veh_opt:      vehicle width used during optimization
-    w_veh_real:     real vehicle width
+    width_veh_opt:  vehicle width used during optimization in m
+    width_veh_real: real vehicle width in m
     refline:        contains the reference line coordinates [x_m, y_m]
     bound1:         first track boundary (mostly right) [x_m, y_m]
     bound2:         second track boundary (mostly left) [x_m, y_m]
@@ -33,11 +33,11 @@ def result_plots(plot_opts: dict,
         normvec_normalized_opt = trajectory_planning_helpers.calc_normal_vectors.\
             calc_normal_vectors(trajectory[:, 3])
 
-        veh_bound1_virt = trajectory[:, 1:3] + normvec_normalized_opt * w_veh_opt / 2
-        veh_bound2_virt = trajectory[:, 1:3] - normvec_normalized_opt * w_veh_opt / 2
+        veh_bound1_virt = trajectory[:, 1:3] + normvec_normalized_opt * width_veh_opt / 2
+        veh_bound2_virt = trajectory[:, 1:3] - normvec_normalized_opt * width_veh_opt / 2
 
-        veh_bound1_real = trajectory[:, 1:3] + normvec_normalized_opt * w_veh_real / 2
-        veh_bound2_real = trajectory[:, 1:3] - normvec_normalized_opt * w_veh_real / 2
+        veh_bound1_real = trajectory[:, 1:3] + normvec_normalized_opt * width_veh_real / 2
+        veh_bound2_real = trajectory[:, 1:3] - normvec_normalized_opt * width_veh_real / 2
 
         point1_arrow = refline[0]
         point2_arrow = refline[3]

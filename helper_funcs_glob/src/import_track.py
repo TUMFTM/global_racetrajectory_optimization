@@ -3,7 +3,7 @@ import numpy as np
 
 def import_track(file_path: str,
                  imp_opts: dict,
-                 veh_dims: dict) -> np.ndarray:
+                 width_veh: float) -> np.ndarray:
     """
     Created by:
     Alexander Heilmeier
@@ -12,12 +12,12 @@ def import_track(file_path: str,
     This function includes the algorithm part connected to the import of the ggv diagram.
 
     Inputs:
-    file_path:      File path of track.csv containing [x_m;y_m;w_right_m;w_left_m]
-    imp_opts:       Import options showing if a new starting point should be set or if the direction should be reversed.
-    veh_dims:       Vehicle dimensions (w_veh_real is required).
+    file_path:      file path of track.csv containing [x_m;y_m;w_right_m;w_left_m]
+    imp_opts:       import options showing if a new starting point should be set or if the direction should be reversed
+    width_veh:      vehicle width required to check against track width
 
     Outputs:
-    reftrack_imp:   Imported track [x_m, y_m, w_tr_right_m, w_tr_left_m]
+    reftrack_imp:   imported track [x_m, y_m, w_tr_right_m, w_tr_left_m]
     """
 
     # load data from csv file
@@ -58,7 +58,7 @@ def import_track(file_path: str,
     # check minimum track width for vehicle width plus a small safety margin
     w_tr_min = np.amin(reftrack_imp[:, 2] + reftrack_imp[:, 3])
 
-    if w_tr_min < veh_dims["w_veh_real"] + 0.5:
+    if w_tr_min < width_veh + 0.5:
         print("Warning: Minimum track width %.2fm is close to or smaller than vehicle width!" % np.amin(w_tr_min))
 
     return reftrack_imp

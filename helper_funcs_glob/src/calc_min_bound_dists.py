@@ -5,8 +5,8 @@ import math
 def calc_min_bound_dists(trajectory: np.ndarray,
                          bound1: np.ndarray,
                          bound2: np.ndarray,
-                         l_veh_real: float,
-                         w_veh_real: float) -> np.ndarray:
+                         length_veh: float,
+                         width_veh: float) -> np.ndarray:
     """
     Created by:
     Alexander Heilmeier
@@ -17,9 +17,10 @@ def calc_min_bound_dists(trajectory: np.ndarray,
     trajectory.
 
     Inputs:
-    trajectory:     array containing the trajectory information. Required are x, y, psi for every point.
-    bound1/2:       array containing the track boundaries [x, y]
-    l/w_veh_real:   real vehicle length and width in m.
+    trajectory:     array containing the trajectory information. Required are x, y, psi for every point
+    bound1/2:       arrays containing the track boundaries [x, y]
+    length_veh:     real vehicle length in m
+    width_veh:      real vehicle width in m
 
     Outputs:
     min_dists:      minimum distance to boundaries for every trajectory point
@@ -32,10 +33,10 @@ def calc_min_bound_dists(trajectory: np.ndarray,
     bounds = np.vstack((bound1, bound2))
 
     # calculate static vehicle edge positions [x, y] for psi = 0
-    fl = np.array([-w_veh_real / 2, l_veh_real / 2])
-    fr = np.array([w_veh_real / 2, l_veh_real / 2])
-    rl = np.array([-w_veh_real / 2, -l_veh_real / 2])
-    rr = np.array([w_veh_real / 2, -l_veh_real / 2])
+    fl = np.array([-width_veh / 2, length_veh / 2])
+    fr = np.array([width_veh / 2, length_veh / 2])
+    rl = np.array([-width_veh / 2, -length_veh / 2])
+    rr = np.array([width_veh / 2, -length_veh / 2])
 
     # loop through all the raceline points
     min_dists = np.zeros(trajectory.shape[0])

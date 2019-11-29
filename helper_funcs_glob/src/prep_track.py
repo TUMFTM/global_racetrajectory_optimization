@@ -5,7 +5,7 @@ import trajectory_planning_helpers
 
 def prep_track(reftrack_imp: np.ndarray,
                reg_smooth_opts: dict,
-               stepsizes: dict,
+               stepsize_opts: dict,
                debug: bool = True,
                check_normal_crossings: bool = False) -> tuple:
     """
@@ -18,7 +18,7 @@ def prep_track(reftrack_imp: np.ndarray,
     Inputs:
     reftrack_imp:               imported track [x_m, y_m, w_tr_right_m, w_tr_left_m]
     reg_smooth_opts:            parameters for the spline approximation
-    stepsizes:                  dict containing the stepsizes before spline approximation and after spline interpolation
+    stepsize_opts:              dict containing the stepsizes before spline approximation and after spline interpolation
     debug:                      boolean showing if debug messages should be printed
     check_normal_crossings:     boolean showing if spline normals should be checked for crossing points (takes a while)
 
@@ -39,8 +39,8 @@ def prep_track(reftrack_imp: np.ndarray,
         spline_approximation(track=reftrack_imp,
                              k_reg=reg_smooth_opts["k_reg"],
                              s_reg=reg_smooth_opts["s_reg"],
-                             stepsize_prep=stepsizes["stepsize_prep"],
-                             stepsize_reg=stepsizes["stepsize_reg"],
+                             stepsize_prep=stepsize_opts["stepsize_prep"],
+                             stepsize_reg=stepsize_opts["stepsize_reg"],
                              debug=debug)
 
     # calculate splines
