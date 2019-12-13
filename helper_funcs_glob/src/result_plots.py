@@ -8,8 +8,10 @@ def result_plots(plot_opts: dict,
                  width_veh_opt: float,
                  width_veh_real: float,
                  refline: np.ndarray,
-                 bound1: np.ndarray,
-                 bound2: np.ndarray,
+                 bound1_imp: np.ndarray,
+                 bound2_imp: np.ndarray,
+                 bound1_interp: np.ndarray,
+                 bound2_interp: np.ndarray,
                  trajectory: np.ndarray) -> None:
     """
     Created by:
@@ -23,8 +25,10 @@ def result_plots(plot_opts: dict,
     width_veh_opt:  vehicle width used during optimization in m
     width_veh_real: real vehicle width in m
     refline:        contains the reference line coordinates [x_m, y_m]
-    bound1:         first track boundary (mostly right) [x_m, y_m]
-    bound2:         second track boundary (mostly left) [x_m, y_m]
+    bound1_imp:     first track boundary (as imported) (mostly right) [x_m, y_m]
+    bound2_imp:     second track boundary (as imported) (mostly left) [x_m, y_m]
+    bound1_interp:  first track boundary (interpolated) (mostly right) [x_m, y_m]
+    bound2_interp:  second track boundary (interpolated) (mostly left) [x_m, y_m]
     trajectory:     trajectory data [s_m, x_m, y_m, psi_rad, kappa_radpm, vx_mps, ax_mps2]
     """
 
@@ -50,9 +54,14 @@ def result_plots(plot_opts: dict,
         plt.plot(veh_bound2_virt[:, 0], veh_bound2_virt[:, 1], "b", linewidth=0.5)
         plt.plot(veh_bound1_real[:, 0], veh_bound1_real[:, 1], "c", linewidth=0.5)
         plt.plot(veh_bound2_real[:, 0], veh_bound2_real[:, 1], "c", linewidth=0.5)
-        plt.plot(bound1[:, 0], bound1[:, 1], "k-", linewidth=0.7)
-        plt.plot(bound2[:, 0], bound2[:, 1], "k-", linewidth=0.7)
+        plt.plot(bound1_interp[:, 0], bound1_interp[:, 1], "k-", linewidth=0.7)
+        plt.plot(bound2_interp[:, 0], bound2_interp[:, 1], "k-", linewidth=0.7)
         plt.plot(trajectory[:, 1], trajectory[:, 2], "r-", linewidth=0.7)
+
+        if plot_opts["imported_bounds"] and bound1_imp is not None and bound2_imp is not None:
+            plt.plot(bound1_imp[:, 0], bound1_imp[:, 1], "y-", linewidth=0.7)
+            plt.plot(bound2_imp[:, 0], bound2_imp[:, 1], "y-", linewidth=0.7)
+
         plt.grid()
         ax = plt.gca()
         ax.arrow(point1_arrow[0], point1_arrow[1], vec_arrow[0], vec_arrow[1],
@@ -85,8 +94,8 @@ def result_plots(plot_opts: dict,
 
         # plot raceline and boundaries
         ax.plot(refline[:, 0], refline[:, 1], "k--", linewidth=0.7)
-        ax.plot(bound1[:, 0], bound1[:, 1], 0.0, "k-", linewidth=0.7)
-        ax.plot(bound2[:, 0], bound2[:, 1], 0.0, "k-", linewidth=0.7)
+        ax.plot(bound1_interp[:, 0], bound1_interp[:, 1], 0.0, "k-", linewidth=0.7)
+        ax.plot(bound2_interp[:, 0], bound2_interp[:, 1], 0.0, "k-", linewidth=0.7)
         ax.plot(trajectory[:, 1], trajectory[:, 2], "r-", linewidth=0.7)
 
         ax.grid()
@@ -130,8 +139,8 @@ def result_plots(plot_opts: dict,
     if plot_opts["spline_normals"]:
         # plot normals
         plt.figure()
-        for i in range(bound1.shape[0]):
-            temp = np.vstack((bound1[i], bound2[i]))
+        for i in range(bound1_interp.shape[0]):
+            temp = np.vstack((bound1_interp[i], bound2_interp[i]))
             plt.plot(temp[:, 0], temp[:, 1], "k-", linewidth=0.7)
         plt.grid()
         ax = plt.gca()

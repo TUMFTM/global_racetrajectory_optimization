@@ -4,28 +4,32 @@ Our code is tested with Python >= 3.7.4
 # List of components
 * `helper_funcs_glob`: This python module contains some helper functions used in several other functions when 
 calculating the global race trajectory.
-* `inputs`: This folder contains the ggv diagrams and reference track csvs for the global race trajectory.
-* `params`: This folder contains the vehicle dependent parameter files.
+* `inputs`: This folder contains the ggv diagrams, the reference track csvs and friction maps.
+* `opt_mintime_traj`: This python module contains the functions required to find the time-optimal trajectory.
+* `params`: This folder contains a parameter file with optimization and vehicle parameters.
 
 # Dependencies
 Use the provided `requirements.txt` in the root directory of this repo, in order to install all required modules.\
 `pip3 install -r /path/to/requirements.txt`
 
 # Running the code
-* `Step 1:` (optional) Adjust the parameter file that can be found in the params folder.
-* `Step 2:` (optional) Adjust the ggv diagram file in `inputs/ggv`.
-* `Step 3:` (optional) Add your own reference track file in `inputs/tracks`.
-* `Step 4:` Check the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory
-generation process. The calculated race trajectory can be found in `outputs/`.
+* `Step 1:` (optional) Adjust the parameter file that can be found in the `params` folder (required file).
+* `Step 2:` (optional) Adjust the ggv diagram file in `inputs/ggv` (if used).
+* `Step 3:` (optional) Add your own reference track file in `inputs/tracks` (required file).
+* `Step 4:` (optional) Add your own friction map files in `inputs/frictionmaps` (if used).
+* `Step 5:` Adjust the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 
+generation process. The calculated race trajectory is stored in `outputs/traj_race_cl.csv`.
+
+IMPORTANT: For further information on the minimum time optimization have a look into the according `Readme.md` which can be
+found in the `opt_mintime_traj` folder!
 
 ![Resulting raceline for the Berlin FE track](opt_raceline_berlin.png)
 
 # Wording and conventions
 We tried to keep a consistant wording for the variable names:
-
-path -> [x, y] Describes any array containing x,y coordinates of points (i.e. point coordinates).\
-refline -> [x, y] A path that is used as reference line during our calculations.\
-reftrack -> [x, y, w_tr_right, w_tr_left] An array that contains not only the reference line information but also right
+* path -> [x, y] Describes any array containing x,y coordinates of points (i.e. point coordinates).\
+* refline -> [x, y] A path that is used as reference line during our calculations.\
+* reftrack -> [x, y, w_tr_right, w_tr_left] An array that contains not only the reference line information but also right
 and left track widths. In our case it contains the race track that is used as a basis for the raceline optimization.
 
 Normal vectors usually point to the right in the direction of driving. Therefore, we get the track boundaries by
@@ -41,12 +45,18 @@ The output csv contains the global race trajectory. The array is of size
 * `psi_rad`: float32, rad. Heading of raceline in current point from -pi to +pi rad. Zero is north (along y-axis).
 * `kappa_radpm`: float32, rad/meter. Curvature of raceline in current point.
 * `vx_mps`: float32, meter/second. Target velocity in current point.
-* `ax_mps2`: float32, meter/second². Target acceleration in current point.
+* `ax_mps2`: float32, meter/second². Target acceleration in current point. We assume this acceleration to be constant
+from current point until next point.
 
-# Detailed description of the curvature minimization used during trajectory generation
-Please refer to our paper for further information:\
+# References
+* Minimum Curvature Trajectory Planning\
 Heilmeier, Wischnewski, Hermansdorfer, Betz, Lienkamp, Lohmann\
 Minimum Curvature Trajectory Planning and Control for an Autonomous Racecar\
-DOI: 10.1080/00423114.2019.1631455
-
+DOI: 10.1080/00423114.2019.1631455\
 Contact person: [Alexander Heilmeier](mailto:alexander.heilmeier@tum.de).
+
+* Time-Optimal Trajectory Planning\
+Christ, Wischnewski, Heilmeier, Lohmann\
+Time-Optimal Trajectory Planning for a Race Car Considering Variable Tire-Road Friction Coefficients\
+DOI: 10.1080/00423114.2019.1704804\
+Contact person: [Fabian Christ](mailto:fabian.christ@tum.de).
