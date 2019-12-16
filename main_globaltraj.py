@@ -437,7 +437,7 @@ if lap_time_mat_opts["use_lap_time_mat"]:
 
             if top_speed < ggv_mod[-1, 0]:
                 # interpolate ggv at cur_v_max
-                ggv_at_v_max = np.zeros(5)
+                ggv_at_v_max = np.zeros(4)
                 ggv_at_v_max[0] = top_speed
 
                 for m in range(1, 4):
@@ -455,7 +455,9 @@ if lap_time_mat_opts["use_lap_time_mat"]:
                                  el_lengths=el_lengths_opt_interp,
                                  dyn_model_exp=pars["optim_opts"]["dyn_model_exp"],
                                  filt_window=pars["optim_opts"]["window_size_conv_filt"],
-                                 closed=True)
+                                 closed=True,
+                                 drag_coeff=pars["veh_params"]["dragcoeff"],
+                                 m_veh=pars["veh_params"]["mass"])
 
             # calculate longitudinal acceleration profile
             vx_profile_opt_cl = np.append(vx_profile_opt, vx_profile_opt[0])
