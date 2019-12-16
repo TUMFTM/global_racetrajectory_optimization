@@ -440,7 +440,7 @@ if lap_time_mat_opts["use_lap_time_mat"]:
                 ggv_at_v_max = np.zeros(5)
                 ggv_at_v_max[0] = top_speed
 
-                for m in range(1, 5):
+                for m in range(1, 4):
                     # scale accelerations
                     ggv_at_v_max[m] = np.interp(top_speed, ggv_mod[:, 0], ggv_mod[:, m])
 

@@ -24,7 +24,9 @@ def check_traj(reftrack: np.ndarray,
     reftrack:       track [x_m, y_m, w_tr_right_m, w_tr_left_m]
     reftrack_normvec_normalized: normalized normal vectors on the reference line [x_m, y_m]
     trajectory:     trajectory to be checked [s_m, x_m, y_m, psi_rad, kappa_radpm, vx_mps, ax_mps2]
-    ggv:            ggv diagram [v_mps, ax_max_machines_mps2, ax_max_tires_mps2, ax_min_tires_mps2, ay_max_tires_mps2]
+    ggv:            ggv-diagram to be applied: [vx, ax_max_machines, ax_max_tires, ay_max_tires].
+                    ax_max_machines should be handed in without considering drag resistance! The last row's vx is
+                    assumed to be the maximum velocity of the car!
     length_veh:     vehicle length in m
     width_veh:      vehicle width in m
     debug:          boolean showing if debug messages should be printed
@@ -93,7 +95,7 @@ def check_traj(reftrack: np.ndarray,
         # check max. lateral accelerations
         ay_profile = np.divide(np.power(trajectory[:, 5], 2), radii)
 
-        if np.amax(ay_profile) > np.amax(np.abs(ggv[:, 4])) + 0.1:
+        if np.amax(ay_profile) > np.amax(np.abs(ggv[:, 3])) + 0.1:
             print("WARNING: Lateral acceleration limit is exceeded: %.2fm/s2" % np.amax(ay_profile))
 
         # check max. longitudinal accelerations (consider that drag is included in the velocity profile!)
@@ -104,18 +106,18 @@ def check_traj(reftrack: np.ndarray,
             print("WARNING: Longitudinal acceleration limit (positive) is exceeded: %.2fm/s2"
                   % np.amax(ax_wo_drag))
 
-        if np.amin(ax_wo_drag) < np.amin(ggv[:, 3]) - 0.1:
+        if np.amin(ax_wo_drag) < np.amin(-ggv[:, 2]) - 0.1:
             print("WARNING: Longitudinal acceleration limit (negative) is exceeded: %.2fm/s2"
                   % np.amin(ax_wo_drag))
 
         # check total acceleration
         a_tot = np.sqrt(np.power(ax_wo_drag, 2) + np.power(ay_profile, 2))
 
-        if np.amax(a_tot) > np.amax(np.abs(ggv[:, 2:])) + 0.1:
+        if np.amax(a_tot) > np.amax(ggv[:, 2:]) + 0.1:
             print("WARNING: Total acceleration limit is exceeded: %.2fm/s2" % np.amax(a_tot))
 
     else:
-        print("WARNING: Since GGV was not given the according checks cannot be performed!")
+        print("WARNING: Since ggv-diagram was not given the according checks cannot be performed!")
 
     return bound_r, bound_l
 
