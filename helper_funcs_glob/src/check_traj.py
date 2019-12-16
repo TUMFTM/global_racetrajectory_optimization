@@ -66,50 +66,56 @@ def check_traj(reftrack: np.ndarray,
 
     # warn if distance falls below a safety margin of 1.0 m
     if min_dist < 1.0:
-        print(
-            "WARNING: Minimum distance to boundaries is estimated to %.2fm. Keep in mind that the distance can also"
-            " lie on the outside of the track!" % min_dist)
+        print("WARNING: Minimum distance to boundaries is estimated to %.2fm. Keep in mind that the distance can also"
+              " lie on the outside of the track!" % min_dist)
     elif debug:
-        print(
-            "Minimum distance to boundaries is estimated to %.2fm. Keep in mind that the distance can also lie on the"
-            " outside of the track!" % min_dist)
+        print("INFO: Minimum distance to boundaries is estimated to %.2fm. Keep in mind that the distance can also lie"
+              " on the outside of the track!" % min_dist)
 
     # ------------------------------------------------------------------------------------------------------------------
-    # CHECK FINAL TRAJECTORY FOR MAXIMUM CURVATURE AND ACCELERATIONS ---------------------------------------------------
+    # CHECK FINAL TRAJECTORY FOR MAXIMUM CURVATURE ---------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------
 
     # check maximum (absolute) curvature
     if np.amax(np.abs(trajectory[:, 4])) > curvlim:
         print("WARNING: Curvature limit is exceeded: %.3frad/m" % np.amax(np.abs(trajectory[:, 4])))
 
-    # transform curvature kappa into corresponding radii (abs because curvature has a sign in our convention)
-    radii = np.abs(np.divide(1.0, trajectory[:, 4],
-                             out=np.full(trajectory.shape[0], np.inf),
-                             where=trajectory[:, 4] != 0))
+    # ------------------------------------------------------------------------------------------------------------------
+    # CHECK FINAL TRAJECTORY FOR MAXIMUM ACCELERATIONS -----------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
 
-    # check max. lateral accelerations
-    ay_profile = np.divide(np.power(trajectory[:, 5], 2), radii)
+    if ggv is not None:
+        # transform curvature kappa into corresponding radii (abs because curvature has a sign in our convention)
+        radii = np.abs(np.divide(1.0, trajectory[:, 4],
+                                 out=np.full(trajectory.shape[0], np.inf),
+                                 where=trajectory[:, 4] != 0))
 
-    if np.amax(ay_profile) > np.amax(np.abs(ggv[:, 4])) + 0.1:
-        print("WARNING: Lateral acceleration limit is exceeded: %.2fm/s2" % np.amax(ay_profile))
+        # check max. lateral accelerations
+        ay_profile = np.divide(np.power(trajectory[:, 5], 2), radii)
 
-    # check max. longitudinal accelerations (consider that drag is included in the velocity profile!)
-    ax_drag = -np.power(trajectory[:, 5], 2) * dragcoeff / mass_veh
-    ax_wo_drag = trajectory[:, 6] - ax_drag
+        if np.amax(ay_profile) > np.amax(np.abs(ggv[:, 4])) + 0.1:
+            print("WARNING: Lateral acceleration limit is exceeded: %.2fm/s2" % np.amax(ay_profile))
 
-    if np.amax(ax_wo_drag) > np.amax(ggv[:, 2]) + 0.1:
-        print("WARNING: Longitudinal acceleration limit (positive) is exceeded: %.2fm/s2"
-              % np.amax(ax_wo_drag))
+        # check max. longitudinal accelerations (consider that drag is included in the velocity profile!)
+        ax_drag = -np.power(trajectory[:, 5], 2) * dragcoeff / mass_veh
+        ax_wo_drag = trajectory[:, 6] - ax_drag
 
-    if np.amin(ax_wo_drag) < np.amin(ggv[:, 3]) - 0.1:
-        print("WARNING: Longitudinal acceleration limit (negative) is exceeded: %.2fm/s2"
-              % np.amin(ax_wo_drag))
+        if np.amax(ax_wo_drag) > np.amax(ggv[:, 2]) + 0.1:
+            print("WARNING: Longitudinal acceleration limit (positive) is exceeded: %.2fm/s2"
+                  % np.amax(ax_wo_drag))
 
-    # check total acceleration
-    a_tot = np.sqrt(np.power(ax_wo_drag, 2) + np.power(ay_profile, 2))
+        if np.amin(ax_wo_drag) < np.amin(ggv[:, 3]) - 0.1:
+            print("WARNING: Longitudinal acceleration limit (negative) is exceeded: %.2fm/s2"
+                  % np.amin(ax_wo_drag))
 
-    if np.amax(a_tot) > np.amax(np.abs(ggv[:, 2:])) + 0.1:
-        print("WARNING: Total acceleration limit is exceeded: %.2fm/s2" % np.amax(a_tot))
+        # check total acceleration
+        a_tot = np.sqrt(np.power(ax_wo_drag, 2) + np.power(ay_profile, 2))
+
+        if np.amax(a_tot) > np.amax(np.abs(ggv[:, 2:])) + 0.1:
+            print("WARNING: Total acceleration limit is exceeded: %.2fm/s2" % np.amax(a_tot))
+
+    else:
+        print("WARNING: Since GGV was not given the according checks cannot be performed!")
 
     return bound_r, bound_l
 

@@ -4,7 +4,7 @@ import hashlib
 
 
 def export_traj(file_paths: dict,
-                traj_race: np.ndarray):
+                traj_race: np.ndarray) -> None:
     """
     Created by:
     Alexander Heilmeier
@@ -23,8 +23,11 @@ def export_traj(file_paths: dict,
     rand_uuid = str(uuid.uuid4())
 
     # hash GGV file with SHA1
-    with open(file_paths["ggv"], 'br') as fh:
-        ggv_content = fh.read()
+    if "ggv" in file_paths:
+        with open(file_paths["ggv"], 'br') as fh:
+            ggv_content = fh.read()
+    else:
+        ggv_content = np.array([])
     ggv_hash = hashlib.sha1(ggv_content).hexdigest()
 
     # write UUID and GGV hash into file
