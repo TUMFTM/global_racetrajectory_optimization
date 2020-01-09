@@ -67,7 +67,7 @@ opt_type = 'mintime'
 # var_friction:                 [-] None, "linear", "gauss" -> set if variable friction coefficients should be used
 #                               either with linear regression or with gaussian basis functions (requires friction map)
 # reopt_mintime_solution:       reoptimization of the mintime solution by min. curv. opt. for improved curv. smoothness
-# recalc_vel_profile_by_tph:    override mintime velocity profile by GGV based calculation (see TPH package)
+# recalc_vel_profile_by_tph:    override mintime velocity profile by ggv based calculation (see TPH package)
 
 mintime_opts = {"tpadata": None,
                 "warm_start": False,
@@ -163,7 +163,8 @@ pars = {}
 if not parser.read(os.path.join(file_paths["module"], "params", file_paths["veh_params_file"])):
     raise ValueError('Specified config file does not exist or is empty!')
 
-pars["ggv"] = json.loads(parser.get('GENERAL_OPTIONS', 'ggv'))
+pars["ggv_file"] = json.loads(parser.get('GENERAL_OPTIONS', 'ggv_file'))
+pars["ax_max_machines_file"] = json.loads(parser.get('GENERAL_OPTIONS', 'ax_max_machines_file'))
 pars["stepsize_opts"] = json.loads(parser.get('GENERAL_OPTIONS', 'stepsize_opts'))
 pars["reg_smooth_opts"] = json.loads(parser.get('GENERAL_OPTIONS', 'reg_smooth_opts'))
 pars["veh_params"] = json.loads(parser.get('GENERAL_OPTIONS', 'veh_params'))
@@ -187,12 +188,14 @@ elif opt_type == 'mintime':
     pars["vehicle_params_mintime"]["wheelbase"] = (pars["vehicle_params_mintime"]["wheelbase_front"]
                                                    + pars["vehicle_params_mintime"]["wheelbase_rear"])
 
-# set import path for ggv diagram (if required)
+# set import path for ggv diagram and ax_max_machines (if required)
 if not (opt_type == 'mintime' and not mintime_opts["recalc_vel_profile_by_tph"]):
-    file_paths["ggv"] = os.path.join(file_paths["module"], "inputs", "ggv", pars["ggv"])
+    file_paths["ggv_file"] = os.path.join(file_paths["module"], "inputs", "veh_dyn_info", pars["ggv_file"])
+    file_paths["ax_max_machines_file"] = os.path.join(file_paths["module"], "inputs", "veh_dyn_info",
+                                                      pars["ax_max_machines_file"])
 
 # ----------------------------------------------------------------------------------------------------------------------
-# IMPORT TRACK AND GGV DIAGRAMM ----------------------------------------------------------------------------------------
+# IMPORT TRACK AND VEHICLE DYNAMICS INFORMATION ------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 
 # save start time
@@ -203,11 +206,14 @@ reftrack_imp = helper_funcs_glob.src.import_track.import_track(imp_opts=imp_opts
                                                                file_path=file_paths["track_file"],
                                                                width_veh=pars["veh_params"]["width"])
 
-# import ggv (if required)
+# import ggv and ax_max_machines (if required)
 if not (opt_type == 'mintime' and not mintime_opts["recalc_vel_profile_by_tph"]):
-    ggv = tph.import_ggv.import_ggv(ggv_import_path=file_paths["ggv"])
+    ggv, ax_max_machines = tph.import_veh_dyn_info.\
+        import_veh_dyn_info(ggv_import_path=file_paths["ggv_file"],
+                            ax_max_machines_import_path=file_paths["ax_max_machines_file"])
 else:
     ggv = None
+    ax_max_machines = None
 
 # ----------------------------------------------------------------------------------------------------------------------
 # PREPARE REFTRACK -----------------------------------------------------------------------------------------------------
@@ -370,6 +376,8 @@ if opt_type == 'mintime' and not mintime_opts["recalc_vel_profile_by_tph"]:
 else:
     vx_profile_opt = tph.calc_vel_profile.\
         calc_vel_profile(ggv=ggv,
+                         ax_max_machines=ax_max_machines,
+                         v_max=pars["veh_params"]["v_max"],
                          kappa=kappa_opt,
                          el_lengths=el_lengths_opt_interp,
                          closed=True,
@@ -433,24 +441,12 @@ if lap_time_mat_opts["use_lap_time_mat"]:
                                         prefix="Simulating laptimes ")
 
             ggv_mod = np.copy(ggv)
-            ggv_mod[:, 2:] *= ggv_scale
-
-            if top_speed < ggv_mod[-1, 0]:
-                # interpolate ggv at cur_v_max
-                ggv_at_v_max = np.zeros(4)
-                ggv_at_v_max[0] = top_speed
-
-                for m in range(1, 4):
-                    # scale accelerations
-                    ggv_at_v_max[m] = np.interp(top_speed, ggv_mod[:, 0], ggv_mod[:, m])
-
-                # set ggv_at_v_max and remove further points in ggv
-                ind_tmp = np.searchsorted(ggv_mod[:, 0], top_speed)
-                ggv_mod[ind_tmp] = ggv_at_v_max
-                ggv_mod = ggv_mod[:ind_tmp + 1]
+            ggv_mod[:, 1:] *= ggv_scale
 
             vx_profile_opt = tph.calc_vel_profile.\
                 calc_vel_profile(ggv=ggv_mod,
+                                 ax_max_machines=ax_max_machines,
+                                 v_max=top_speed,
                                  kappa=kappa_opt,
                                  el_lengths=el_lengths_opt_interp,
                                  dyn_model_exp=pars["optim_opts"]["dyn_model_exp"],
@@ -508,6 +504,8 @@ bound1, bound2 = helper_funcs_glob.src.check_traj.\
                debug=debug,
                trajectory=trajectory_opt,
                ggv=ggv,
+               ax_max_machines=ax_max_machines,
+               v_max=pars["veh_params"]["v_max"],
                curvlim=pars["veh_params"]["curvlim"],
                mass_veh=pars["veh_params"]["mass"],
                dragcoeff=pars["veh_params"]["dragcoeff"])

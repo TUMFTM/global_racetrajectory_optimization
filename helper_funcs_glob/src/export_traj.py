@@ -15,16 +15,16 @@ def export_traj(file_paths: dict,
     check it later.
 
     Inputs:
-    file_paths:     paths for input and output files {ggv, traj_race_export, traj_ltpl_export, lts_export}
+    file_paths:     paths for input and output files {ggv_file, traj_race_export, traj_ltpl_export, lts_export}
     traj_race:      race trajectory [s_m, x_m, y_m, psi_rad, kappa_radpm, vx_mps, ax_mps2]
     """
 
     # create random UUID
     rand_uuid = str(uuid.uuid4())
 
-    # hash GGV file with SHA1
-    if "ggv" in file_paths:
-        with open(file_paths["ggv"], 'br') as fh:
+    # hash ggv file with SHA1
+    if "ggv_file" in file_paths:
+        with open(file_paths["ggv_file"], 'br') as fh:
             ggv_content = fh.read()
     else:
         ggv_content = np.array([])

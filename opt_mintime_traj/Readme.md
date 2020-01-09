@@ -40,7 +40,6 @@ See below for additional parameters.
 
 The following optimization options can be specified in `db.ini` in the dict `optim_opts_mintime`:
 * The car width for optimization is set through `width_opt` and includes the vehicle width and a safety margin.
-* The maximal velocity can be limited to `v_max`.
 * Penalty terms (`penalty_delta` & `penalty_F`) can be specified in order to increase the smoothness of the control 
 trajectories. Too big values lead to a distortion of the original minimum lap time problem.
 * Depending on the setting of `var_friction` as described above the friction coefficient handling differs. A constant 

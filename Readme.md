@@ -4,7 +4,7 @@ Our code is tested with Python >= 3.7.4
 # List of components
 * `helper_funcs_glob`: This python module contains some helper functions used in several other functions when 
 calculating the global race trajectory.
-* `inputs`: This folder contains the ggv diagrams, the reference track csvs and friction maps.
+* `inputs`: This folder contains the vehicle dynamics information, the reference track csvs and friction maps.
 * `opt_mintime_traj`: This python module contains the functions required to find the time-optimal trajectory.
 * `params`: This folder contains a parameter file with optimization and vehicle parameters.
 
@@ -14,7 +14,7 @@ Use the provided `requirements.txt` in the root directory of this repo, in order
 
 # Running the code
 * `Step 1:` (optional) Adjust the parameter file that can be found in the `params` folder (required file).
-* `Step 2:` (optional) Adjust the ggv diagram file in `inputs/ggv` (if used).
+* `Step 2:` (optional) Adjust the ggv diagram and ax_max_machines files in `inputs/veh_dyn_info` (if used).
 * `Step 3:` (optional) Add your own reference track file in `inputs/tracks` (required file).
 * `Step 4:` (optional) Add your own friction map files in `inputs/frictionmaps` (if used).
 * `Step 5:` Adjust the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 

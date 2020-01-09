@@ -9,7 +9,7 @@ def import_track(file_path: str,
     Alexander Heilmeier
 
     Documentation:
-    This function includes the algorithm part connected to the import of the ggv diagram.
+    This function includes the algorithm part connected to the import of the track.
 
     Inputs:
     file_path:      file path of track.csv containing [x_m;y_m;w_right_m;w_left_m]

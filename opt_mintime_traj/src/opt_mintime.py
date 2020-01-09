@@ -350,7 +350,7 @@ def opt_mintime(reftrack: np.ndarray,
     # ------------------------------------------------------------------------------------------------------------------
 
     v_min = 1.0 / v_s                               # min. velocity [m/s]
-    v_max = pars["optim_opts"]["v_max"] / v_s       # max. velocity [m/s]
+    v_max = pars["veh_params"]["v_max"] / v_s       # max. velocity [m/s]
     beta_min = -0.5 * np.pi / beta_s                # min. side slip angle [rad]
     beta_max = 0.5 * np.pi / beta_s                 # max. side slip angle [rad]
     omega_z_min = - 0.5 * np.pi / omega_z_s         # min. yaw rate [rad/s]
