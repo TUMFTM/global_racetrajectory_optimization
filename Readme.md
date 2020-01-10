@@ -1,5 +1,5 @@
 # Python version
-Our code is tested with Python >= 3.7.4
+Our code is tested with Python 3.5.2
 
 # List of components
 * `helper_funcs_glob`: This python module contains some helper functions used in several other functions when 
