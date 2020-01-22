@@ -8,6 +8,10 @@ calculating the global race trajectory.
 * `opt_mintime_traj`: This python module contains the functions required to find the time-optimal trajectory.
 * `params`: This folder contains a parameter file with optimization and vehicle parameters.
 
+# Trajectory Planning Helpers repository
+Lots of the required functions for trajectory planning are cumulated in our trajectory planning helpers repository. It
+can be found on https://github.com/TUMFTM/trajectory_planning_helpers. They can be quite useful for other projects as well.
+
 # Dependencies
 Use the provided `requirements.txt` in the root directory of this repo, in order to install all required modules.\
 `pip3 install -r /path/to/requirements.txt`
