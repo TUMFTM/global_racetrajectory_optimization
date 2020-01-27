@@ -2,10 +2,12 @@
 Our code is tested with Python 3.5.2
 
 # List of components
-* `helper_funcs_glob`: This python module contains some helper functions used in several other functions when 
+* `frictionmap`: This package contains the functions related to the creation and handling of friction maps along the
+race track.
+* `helper_funcs_glob`: This package contains some helper functions used in several other functions when 
 calculating the global race trajectory.
 * `inputs`: This folder contains the vehicle dynamics information, the reference track csvs and friction maps.
-* `opt_mintime_traj`: This python module contains the functions required to find the time-optimal trajectory.
+* `opt_mintime_traj`: This package contains the functions required to find the time-optimal trajectory.
 * `params`: This folder contains a parameter file with optimization and vehicle parameters.
 
 # Trajectory Planning Helpers repository
@@ -15,6 +17,12 @@ can be found on https://github.com/TUMFTM/trajectory_planning_helpers. They can 
 # Dependencies
 Use the provided `requirements.txt` in the root directory of this repo, in order to install all required modules.\
 `pip3 install -r /path/to/requirements.txt`
+
+# Creating your own friction map
+The script `main_gen_frictionmap.py` can be used to create your own friction map for any race track file supplied in the
+input folder. The resulting maps are stored in the `inputs/frictionmaps` folder. These friction maps can be used within
+the minimum time optimization. In principle, they can also be considered within the velocity profile calculation of the
+minimum curvature planner. However, this is currently not supported from our side.
 
 # Running the code
 * `Step 1:` (optional) Adjust the parameter file that can be found in the `params` folder (required file).
