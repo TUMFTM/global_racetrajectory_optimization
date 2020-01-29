@@ -12,6 +12,10 @@ Leonhard Hermansdorfer
 
 Created on:
 01.02.2019
+
+Documentation:
+To plot friction map data from an already existing file, adjust trackname and filenames at the bottom of this file and 
+run this file directly.
 """
 
 
@@ -154,4 +158,9 @@ def plot_tpamap_fromVariable(tpa_map: cKDTree,
 # testing --------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
-    pass
+
+    track_name = 'berlin_2018'
+    filename_tpamap = 'berlin_2018_tpamap.csv'
+    filename_tpadata = 'berlin_2018_varmue08-12_tpadata.json'
+
+    plot_tpamap_fromFile(track_name, filename_tpamap, filename_tpadata)

@@ -225,7 +225,6 @@ def opt_mintime(reftrack: np.ndarray,
 
     # general constants
     g = pars["veh_params"]["g"]
-    rho = pars["veh_params"]["rho_air"]
     mass = pars["veh_params"]["mass"]
 
     # curvature of reference line [rad/m]
@@ -248,10 +247,10 @@ def opt_mintime(reftrack: np.ndarray,
     f_zstat_rr = 0.5 * mass * g * veh["wheelbase_front"] / veh["wheelbase"]
 
     # dynamic normal tire forces (aerodynamic downforces) [N]
-    f_zlift_fl = 0.5 * 0.5 * veh["clA_front"] * rho * v ** 2
-    f_zlift_fr = 0.5 * 0.5 * veh["clA_front"] * rho * v ** 2
-    f_zlift_rl = 0.5 * 0.5 * veh["clA_rear"] * rho * v ** 2
-    f_zlift_rr = 0.5 * 0.5 * veh["clA_rear"] * rho * v ** 2
+    f_zlift_fl = 0.5 * veh["liftcoeff_front"] * v ** 2
+    f_zlift_fr = 0.5 * veh["liftcoeff_front"] * v ** 2
+    f_zlift_rl = 0.5 * veh["liftcoeff_rear"] * v ** 2
+    f_zlift_rr = 0.5 * veh["liftcoeff_rear"] * v ** 2
 
     # dynamic normal tire forces (load transfers) [N]
     f_zdyn_fl = (-0.5 * veh["cog_z"] / veh["wheelbase"] * (f_drive + f_brake - f_xdrag - f_xroll)

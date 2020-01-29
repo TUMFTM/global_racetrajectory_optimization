@@ -87,7 +87,6 @@ def result_plots_mintime(pars: dict,
 
     # parameters
     g = pars["veh_params"]["g"]
-    rho = pars["veh_params"]["rho_air"]
     veh = pars["vehicle_params_mintime"]
     tire = pars["tire_params_mintime"]
 
@@ -318,10 +317,10 @@ def result_plots_mintime(pars: dict,
         f_xroll = tire["c_roll"] * pars["veh_params"]["mass"] * g
         f_xdrag = pars["veh_params"]["dragcoeff"] * v ** 2
 
-        f_zlift_fl = 0.5 * 0.5 * veh["clA_front"] * rho * v ** 2
-        f_zlift_fr = 0.5 * 0.5 * veh["clA_front"] * rho * v ** 2
-        f_zlift_rl = 0.5 * 0.5 * veh["clA_rear"] * rho * v ** 2
-        f_zlift_rr = 0.5 * 0.5 * veh["clA_rear"] * rho * v ** 2
+        f_zlift_fl = 0.5 * veh["liftcoeff_front"] * v ** 2
+        f_zlift_fr = 0.5 * veh["liftcoeff_front"] * v ** 2
+        f_zlift_rl = 0.5 * veh["liftcoeff_rear"] * v ** 2
+        f_zlift_rr = 0.5 * veh["liftcoeff_rear"] * v ** 2
 
         f_zlong_fl = -0.5 * veh["cog_z"] / veh["wheelbase"] * (f_drive + f_brake - f_xroll - f_xdrag)
         f_zlong_fr = -0.5 * veh["cog_z"] / veh["wheelbase"] * (f_drive + f_brake - f_xroll - f_xdrag)

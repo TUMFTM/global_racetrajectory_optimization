@@ -247,7 +247,7 @@ if opt_type == 'mincurv':
     alpha_opt = tph.opt_min_curv.opt_min_curv(reftrack=reftrack_interp,
                                               normvectors=normvec_normalized_interp,
                                               A=a_interp,
-                                              kappa_bound=pars["optim_opts"]["curvlim"],
+                                              kappa_bound=pars["veh_params"]["curvlim"],
                                               w_veh=pars["optim_opts"]["width_opt"],
                                               print_debug=debug,
                                               plot_debug=plot_opts["mincurv_curv_lin"])[0]
@@ -257,7 +257,7 @@ elif opt_type == 'mincurv_iqp':
         iqp_handler(reftrack=reftrack_interp,
                     normvectors=normvec_normalized_interp,
                     A=a_interp,
-                    kappa_bound=pars["optim_opts"]["curvlim"],
+                    kappa_bound=pars["veh_params"]["curvlim"],
                     w_veh=pars["optim_opts"]["width_opt"],
                     print_debug=debug,
                     plot_debug=plot_opts["mincurv_curv_lin"],
@@ -321,7 +321,7 @@ if opt_type == 'mintime' and mintime_opts["reopt_mintime_solution"]:
     alpha_opt = tph.opt_min_curv.opt_min_curv(reftrack=racetrack_mintime_reopt,
                                               normvectors=normvec_normalized_interp,
                                               A=a_interp,
-                                              kappa_bound=pars["optim_opts"]["curvlim"],
+                                              kappa_bound=pars["veh_params"]["curvlim"],
                                               w_veh=pars["optim_opts"]["w_veh_reopt"],
                                               print_debug=debug,
                                               plot_debug=plot_opts["mincurv_curv_lin"])[0]

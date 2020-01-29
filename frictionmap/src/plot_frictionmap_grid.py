@@ -11,6 +11,10 @@ Leonhard Hermansdorfer
 
 Created on:
 01.12.2018
+
+Documentation:
+To plot a friction map from an already existing file, adjust trackname and filenames at the bottom of this file and 
+run this file directly.
 """
 
 
@@ -109,4 +113,8 @@ def plot_voronoi_fromVariable(tree: cKDTree,
 # testing --------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
-    pass
+
+    track_name = 'modena_2019'
+    filename_tpamap = 'modena2019_tpamap.csv'
+
+    plot_voronoi_fromFile(track_name, filename_tpamap)
