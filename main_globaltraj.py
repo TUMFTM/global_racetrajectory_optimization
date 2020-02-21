@@ -44,8 +44,7 @@ file_paths["track_name"] = "berlin_2018"                                    # Be
 # file_paths["track_name"] = "modena_2019"                                    # Modena 2019
 
 # set import options ---------------------------------------------------------------------------------------------------
-imp_opts = {"check_normal_crossings": False,        # check for normal vector crossings (takes a while)
-            "flip_imp_track": False,                # flip imported track to reverse direction
+imp_opts = {"flip_imp_track": False,                # flip imported track to reverse direction
             "set_new_start": False,                 # set new starting point (changes order, not coordinates)
             "new_start": np.array([0.0, -47.0]),    # [x_m, y_m]
             "min_track_width": None,                # [m] minimum enforced track width (set None to deactivate)
@@ -224,7 +223,6 @@ reftrack_interp, normvec_normalized_interp, a_interp, coeffs_x_interp, coeffs_y_
                                                 reg_smooth_opts=pars["reg_smooth_opts"],
                                                 stepsize_opts=pars["stepsize_opts"],
                                                 debug=debug,
-                                                check_normal_crossings=imp_opts["check_normal_crossings"],
                                                 min_width=imp_opts["min_track_width"],
                                                 cone_mode=imp_opts["cone_mode"])
 
@@ -309,7 +307,6 @@ if opt_type == 'mintime' and mintime_opts["reopt_mintime_solution"]:
                                                     reg_smooth_opts=pars["reg_smooth_opts"],
                                                     stepsize_opts=pars["stepsize_opts"],
                                                     debug=False,
-                                                    check_normal_crossings=False,
                                                     min_width=imp_opts["min_track_width"],
                                                     cone_mode=imp_opts["cone_mode"])[:3]
 
