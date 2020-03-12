@@ -214,6 +214,26 @@ else:
     ggv = None
     ax_max_machines = None
 
+# set ax_pos_safe / ax_neg_safe / ay_safe if required and not set in parameters file
+if opt_type == 'mintime' and pars["optim_opts"]["safe_traj"] \
+        and (pars["optim_opts"]["ax_pos_safe"] is None
+             or pars["optim_opts"]["ax_neg_safe"] is None
+             or pars["optim_opts"]["ay_safe"] is None):
+
+    # get ggv if not available
+    if ggv is None:
+        ggv = tph.import_veh_dyn_info. \
+            import_veh_dyn_info(ggv_import_path=file_paths["ggv_file"],
+                                ax_max_machines_import_path=file_paths["ax_max_machines_file"])[0]
+
+    # limit accelerations
+    if pars["optim_opts"]["ax_pos_safe"] is None:
+        pars["optim_opts"]["ax_pos_safe"] = np.amin(ggv[:, 1])
+    if pars["optim_opts"]["ax_neg_safe"] is None:
+        pars["optim_opts"]["ax_neg_safe"] = -np.amin(ggv[:, 1])
+    if pars["optim_opts"]["ay_safe"] is None:
+        pars["optim_opts"]["ay_safe"] = np.amin(ggv[:, 2])
+
 # ----------------------------------------------------------------------------------------------------------------------
 # PREPARE REFTRACK -----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
