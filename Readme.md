@@ -72,3 +72,9 @@ Christ, Wischnewski, Heilmeier, Lohmann\
 Time-Optimal Trajectory Planning for a Race Car Considering Variable Tire-Road Friction Coefficients\
 DOI: 10.1080/00423114.2019.1704804\
 Contact person: [Fabian Christ](mailto:fabian.christ@tum.de).
+
+* Friction Map Generation\
+Hermansdorfer, Betz, Lienkamp\
+A Concept for Estimation and Prediction of the Tire-Road Friction Potential for an Autonomous Racecar\
+DOI: 10.1109/ITSC.2019.8917024\
+Contact person: [Leonhard Hermansdorfer](mailto:leo.hermansdorfer@tum.de).
