@@ -12,11 +12,15 @@ def result_plots_mintime(pars: dict,
                          ay: np.ndarray,
                          atot: np.ndarray,
                          tf: np.ndarray,
-                         ec: np.ndarray) -> None:
+                         ec: np.ndarray,
+                         pwr: dict = None) -> None:
 
     """
     Created by:
     Fabian Christ
+
+    Extended by:
+    Thomas Herrmann (thomas.herrmann@tum.de)
 
     Documentation:
     This function plots several figures containing relevant trajectory information after trajectory optimization.
@@ -52,7 +56,10 @@ def result_plots_mintime(pars: dict,
                  "tire_forces": True,
                  "tire_forces_longitudinal": True,
                  "tire_forces_dynamic": True,
-                 "energy_consumption": True}
+                 "energy_consumption": True,
+                 "pwr_states": True,
+                 "pwr_soc": True,
+                 "pwr_losses": True}
 
     # ------------------------------------------------------------------------------------------------------------------
     # EXTRACT PLOT DATA ------------------------------------------------------------------------------------------------
@@ -64,7 +71,14 @@ def result_plots_mintime(pars: dict,
     omega_z = x[:, 2]
     n = x[:, 3]
     xi = x[:, 4]
-    
+    if pars["pwr_params_mintime"]["pwr_behavior"]:
+        temp_mot = x[:, 5]
+        temp_batt = x[:, 6]
+        temp_inv = x[:, 7]
+        temp_radiators_cool_mi = x[:, 8]
+        temp_radiators_cool_b = x[:, 9]
+        soc_batt = x[:, 10]
+
     # control variables
     delta = np.append(u[:, 0], u[0, 0])
     f_drive = np.append(u[:, 1], u[0, 1])
@@ -161,20 +175,6 @@ def result_plots_mintime(pars: dict,
         plt.xlabel('distance ' + r'$\it{s}$' + ' in ' + r'$\it{m}$')
         plt.ylabel('lateral distance to reference line ' + r'$\it{n}$' + ' in ' + r'$\it{m}$')
         plt.legend(['raceline', 'road boundaries', 'road boundaries - safety margin'], ncol=1, loc=4)
-        plt.grid()
-        plt.show()
-
-    # ------------------------------------------------------------------------------------------------------------------
-    # PLOT: POWER ------------------------------------------------------------------------------------------------------
-    # ------------------------------------------------------------------------------------------------------------------
-
-    if plot_opts["power"]:
-
-        plt.figure(4)
-        plt.clf()
-        plt.step(s, v * (f_drive + f_brake) / 1000.0, where="post")
-        plt.xlabel('distance ' + r'$\it{s}$' + ' in ' + r'$\it{m}$')
-        plt.ylabel('power ' + r'$\it{P}$' + ' in ' + r'$\it{kW}$')
         plt.grid()
         plt.show()
 
@@ -384,6 +384,78 @@ def result_plots_mintime(pars: dict,
         plt.plot(s, ec)
         plt.xlabel('distance ' + r'$\it{s}$' + ' in ' + r'$\it{m}$')
         plt.ylabel('energy consumption ' + r'$\it{ec}$' + ' in ' + r'$\it{Wh}$')
+        plt.grid()
+        plt.show()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # PLOT: POWER ------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
+
+    if plot_opts["power"]:
+        plt.figure(4)
+        plt.clf()
+        plt.plot(s, v * (f_drive + f_brake) / 1000.0)
+        plt.xlabel('distance ' + r'$\it{s}$' + ' in ' + r'$m$')
+        plt.ylabel('power ' + r'$\it{P}$' + ' in ' + r'$kW$')
+        plt.grid()
+        plt.legend(r'$\it{P_{wheel}}$')
+        if pwr is not None:
+            plt.plot(s[:-1], pwr["batt"].p_loss_total + pwr["batt"].p_out_batt)
+            plt.legend([r'$\it{P_{wheel}}$', r'$\it{P_{system}}$'])
+        plt.show()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # PLOT: POWERTRAIN TEMPERATURES ------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
+
+    if pars["pwr_params_mintime"]["pwr_behavior"] and plot_opts["pwr_states"]:
+
+        plt.figure(10)
+        plt.plot(s, temp_mot)
+        plt.plot(s, temp_batt)
+        plt.plot(s, temp_inv)
+        plt.plot(s, temp_radiators_cool_mi)
+        plt.plot(s, temp_radiators_cool_b)
+
+        plt.xlabel('distance ' + r'$\it{s}$' + ' in ' + r'$\it{m}$')
+        plt.ylabel('component temperatures ' + r'$\it{T}$' + ' in ' + r'°C')
+        plt.legend([r'$\it{T_\mathrm{Machine}}$', r'$\it{T_\mathrm{Battery}}$', r'$\it{T_\mathrm{Inverter}}$',
+                    r'$\it{T_\mathrm{Fluid_{MI}}}$', r'$\it{T_\mathrm{Fluid_B}}$'])
+        plt.grid()
+        plt.show()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # PLOT: SOC BATTERY ------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
+
+    if pars["pwr_params_mintime"]["pwr_behavior"] and plot_opts["pwr_soc"]:
+
+        plt.figure(11)
+        plt.plot(s, soc_batt)
+        plt.xlabel('distance ' + r'$\it{s}$' + ' in ' + r'$\it{m}$')
+        plt.ylabel('SOC battery [1 - 0]')
+        plt.grid()
+        plt.show()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    # PLOT: POWER LOSSES -----------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
+
+    if pars["pwr_params_mintime"]["pwr_behavior"] and plot_opts["pwr_losses"]:
+
+        if pars["pwr_params_mintime"]["simple_loss"]:
+            plt.figure(12)
+            plt.plot(s[:-1], pwr["machine"].p_loss_total)
+            plt.plot(s[:-1], pwr["inverter"].p_loss_total)
+            plt.plot(s[:-1], pwr["batt"].p_loss_total)
+            plt.legend([r'$\it{P_\mathrm{loss,machine}}$', r'$\it{P_\mathrm{loss,inverter}}$',
+                        r'$\it{P_\mathrm{loss,battery}}$'])
+            plt.ylabel('Power loss ' + r'$\it{P_\mathrm{loss}}$' + ' in ' + r'kW')
+        else:
+            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
+            exit(1)
+
+        plt.xlabel('distance ' + r'$\it{s}$' + ' in ' + r'$\it{m}$')
         plt.grid()
         plt.show()
 

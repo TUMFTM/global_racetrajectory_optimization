@@ -48,6 +48,8 @@ imp_opts = {"flip_imp_track": False,                # flip imported track to rev
             "set_new_start": False,                 # set new starting point (changes order, not coordinates)
             "new_start": np.array([0.0, -47.0]),    # [x_m, y_m]
             "min_track_width": None,                # [m] minimum enforced track width (set None to deactivate)
+            "num_laps": 1,                          # number of laps to be driven (significant with powertrain-option),
+                                                    # only relevant in mintime-optimization
             "cone_mode": False}                     # if True, detect single cone in track widths and inflate region
 #                                                     before / after that cone to avoid that the planner is constrainted
 #                                                     to the corridor which would lead to curvature oscillations
@@ -180,6 +182,7 @@ elif opt_type == 'mintime':
     pars["optim_opts"] = json.loads(parser.get('OPTIMIZATION_OPTIONS', 'optim_opts_mintime'))
     pars["vehicle_params_mintime"] = json.loads(parser.get('OPTIMIZATION_OPTIONS', 'vehicle_params_mintime'))
     pars["tire_params_mintime"] = json.loads(parser.get('OPTIMIZATION_OPTIONS', 'tire_params_mintime'))
+    pars["pwr_params_mintime"] = json.loads(parser.get('OPTIMIZATION_OPTIONS', 'pwr_params_mintime'))
 
     # modification of mintime options/parameters
     pars["optim_opts"]["var_friction"] = mintime_opts["var_friction"]
@@ -290,16 +293,23 @@ elif opt_type == 'shortest_path':
                                                         print_debug=debug)
 
 elif opt_type == 'mintime':
-    alpha_opt, v_opt = opt_mintime_traj.src.opt_mintime.opt_mintime(reftrack=reftrack_interp,
-                                                                    coeffs_x=coeffs_x_interp,
-                                                                    coeffs_y=coeffs_y_interp,
-                                                                    normvectors=normvec_normalized_interp,
-                                                                    pars=pars_tmp,
-                                                                    tpamap_path=file_paths["tpamap"],
-                                                                    tpadata_path=file_paths["tpadata"],
-                                                                    export_path=file_paths["mintime_export"],
-                                                                    print_debug=debug,
-                                                                    plot_debug=plot_opts["mintime_plots"])
+    # reftrack_interp, a_interp and normvec_normalized_interp are returned for the case that non-regular sampling was
+    # applied
+    alpha_opt, v_opt, reftrack_interp, a_interp_tmp, normvec_normalized_interp = opt_mintime_traj.src.opt_mintime.\
+        opt_mintime(reftrack=reftrack_interp,
+                    coeffs_x=coeffs_x_interp,
+                    coeffs_y=coeffs_y_interp,
+                    normvectors=normvec_normalized_interp,
+                    pars=pars_tmp,
+                    tpamap_path=file_paths["tpamap"],
+                    tpadata_path=file_paths["tpadata"],
+                    export_path=file_paths["mintime_export"],
+                    print_debug=debug,
+                    plot_debug=plot_opts["mintime_plots"])
+
+    # replace a_interp if necessary
+    if a_interp_tmp is not None:
+        a_interp = a_interp_tmp
 
 else:
     raise ValueError('Unknown optimization type!')

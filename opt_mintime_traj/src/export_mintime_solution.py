@@ -3,6 +3,7 @@ import os
 
 
 def export_mintime_solution(file_path: str,
+                            pars: dict,
                             s: np.ndarray,
                             t: np.ndarray,
                             x: np.ndarray,
@@ -13,11 +14,15 @@ def export_mintime_solution(file_path: str,
                             atot: np.ndarray,
                             w0: np.ndarray,
                             lam_x0: np.ndarray,
-                            lam_g0: np.ndarray) -> None:
+                            lam_g0: np.ndarray,
+                            pwr: dict = None) -> None:
 
     """
     Created by:
     Fabian Christ
+
+    Modified by:
+    Thomas Herrmann (thomas.herrmann@tum.de)
 
     Documentation:
     This function is used to export the solution of the time-optimal trajectory planning into several csv files.
@@ -38,10 +43,18 @@ def export_mintime_solution(file_path: str,
     """
 
     # save state variables
-    header_x = "s_m; t_s; v_mps; beta_rad; omega_z_radps; n_m; xi_rad"
-    fmt_x = "%.1f; %.3f; %.2f; %.5f; %.5f; %.5f; %.5f"
-    states = np.column_stack((s, t, x))
-    np.savetxt(os.path.join(file_path, 'states.csv'), states, fmt=fmt_x, header=header_x)
+    if pars["pwr_params_mintime"]["pwr_behavior"]:
+        header_x = ("s_m; t_s; v_mps; beta_rad; omega_z_radps; n_m; xi_rad; "
+                    "machine.temp_mot_dC; batt.temp_batt_dC; inverter.temp_inv_dC; "
+                    "radiators.temp_cool_mi_dC; radiators.temp_cool_b_dC; batt.soc_batt")
+        fmt_x = "%.1f; %.3f; %.2f; %.5f; %.5f; %.5f; %.5f; %.2f; %.2f; %.2f; %.2f; %.2f; %.5f;"
+        states = np.column_stack((s, t, x))
+        np.savetxt(os.path.join(file_path, 'states.csv'), states, fmt=fmt_x, header=header_x)
+    else:
+        header_x = "s_m; t_s; v_mps; beta_rad; omega_z_radps; n_m; xi_rad"
+        fmt_x = "%.1f; %.3f; %.2f; %.5f; %.5f; %.5f; %.5f"
+        states = np.column_stack((s, t, x))
+        np.savetxt(os.path.join(file_path, 'states.csv'), states, fmt=fmt_x, header=header_x)
 
     # save control variables
     header_u = "s_m; t_s; delta_rad; f_drive_N; f_brake_N; gamma_y_N"
@@ -61,6 +74,29 @@ def export_mintime_solution(file_path: str,
     fmt_a = "%.1f; %.3f; %.3f; %.3f; %.3f"
     accelerations = np.column_stack((s, t, ax, ay, atot))
     np.savetxt(os.path.join(file_path, 'accelerations.csv'), accelerations, fmt=fmt_a, header=header_a)
+
+    # save power losses
+    if pars["pwr_params_mintime"]["pwr_behavior"]:
+        if pars["pwr_params_mintime"]["simple_loss"]:
+            header_pwr_l = \
+                ("s_m; t_s; "
+                 "P_loss_1machine_kW; "
+                 "P_loss_1inverter_kW; "
+                 "P_loss_batt_kW; P_out_batt_kW")
+            fmt_pwr_l = ("%.1f; %.3f; "
+                         "%.2f; "
+                         "%.2f; "
+                         "%.2f; %.2f")
+            pwr_losses = \
+                np.column_stack((s[:-1], t[:-1],
+                                 pwr["machine"].p_loss_total,
+                                 pwr["inverter"].p_loss_total,
+                                 pwr["batt"].p_loss_total, pwr["batt"].p_out_batt))
+        else:
+            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
+            exit(1)
+
+        np.savetxt(os.path.join(file_path, 'power_losses.csv'), pwr_losses, fmt=fmt_pwr_l, header=header_pwr_l)
 
     # save solution of decision variables and lagrange multipliers
     np.savetxt(os.path.join(file_path, 'w0.csv'), w0, delimiter=';')

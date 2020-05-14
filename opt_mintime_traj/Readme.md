@@ -15,7 +15,8 @@ trajectory, and therefore significantly improve lap times on inhomogenous racetr
 
 ![Raceline for the Berlin FE track considering variable friction values](var_friction_berlin.png)
 
-# File Structure
+# File and Folder Structure
+* `/powertrain_src`: This folder contains the powertrain models. 
 * `approx_friction_map.py`: This function calculates an approximation of the provided friction map in a format 
 which can be taken into accout in the formulation of time-optimal trajectory planning. 
 * `export_mintime_solution.py`: This function exports the solution of the optimization to csvs.
@@ -38,7 +39,7 @@ course of these variable friction coefficients along the racetrack can be descri
 functions (`var_friction = "linear"`) or by linear combinations of gaussian basis functions (`var_friction = "gauss"`).
 See below for additional parameters.
 
-The following optimization options can be specified in `db.ini` in the dict `optim_opts_mintime`:
+The following optimization options can be specified in the parameter file in `/params` in the dict `optim_opts_mintime`:
 * The car width for optimization is set through `width_opt` and includes the vehicle width and a safety margin.
 * Penalty terms (`penalty_delta` & `penalty_F`) can be specified in order to increase the smoothness of the control 
 trajectories. Too big values lead to a distortion of the original minimum lap time problem.
@@ -54,6 +55,8 @@ For this purpose the number of gaussian basis functions on each side (`n_gauss`)
 defined by the acceleration limits `ax_pos_safe`, `ax_neg_safe` and `ay_safe`.
 * The parameters for the two-track model can be specified in the variable `vehicle`.
 * The parameters for Pacejka's Magic Formula tire model can be specified in in the variable `tire`.
+
+Switch on the powertrain behavior in the parameter file in `/params` using dict `pwr_params_mintime`.
 
 # Possible Failures
 * The trajectory planner uses the curvature of the reference line for describing the racetrack. A smooth course of the 
@@ -78,7 +81,13 @@ after optimization for visualizing control variables, state variables, tire forc
 * `scipy` & `sklearn` for deriving the description of friction map with linear regession using gaussian basis functions.
 
 # References
-Christ, Wischnewski, Heilmeier, Lohmann\
+* Christ, Wischnewski, Heilmeier, Lohmann\
 Time-Optimal Trajectory Planning for a Race Car Considering Variable Tire-Road Friction Coefficients\
 DOI: 10.1080/00423114.2019.1704804\
 Contact person: [Fabian Christ](mailto:fabian.christ@tum.de).
+
+* Powertrain Behavior\
+Herrmann, Passigato, Betz, Lienkamp\
+Minimum Race-Time Planning-Strategy for an Autonomous Electric Racecar\
+In Press\
+Contact person: [Thomas Herrmann](mailto:thomas.herrmann@tum.de).

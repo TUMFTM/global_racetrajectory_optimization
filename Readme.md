@@ -7,7 +7,9 @@ race track.
 * `helper_funcs_glob`: This package contains some helper functions used in several other functions when 
 calculating the global race trajectory.
 * `inputs`: This folder contains the vehicle dynamics information, the reference track csvs and friction maps.
-* `opt_mintime_traj`: This package contains the functions required to find the time-optimal trajectory.
+* `opt_mintime_traj`: This package contains the functions required to find the time-optimal trajectory including the
+powertrain components in `/powertrain_src`  used to calculate power losses, the thermal behavior of the powertrain and
+to consider the state of charge of the battery.
 * `params`: This folder contains a parameter file with optimization and vehicle parameters.
 
 # Trajectory Planning Helpers repository
@@ -29,7 +31,11 @@ minimum curvature planner. However, this is currently not supported from our sid
 * `Step 2:` (optional) Adjust the ggv diagram and ax_max_machines files in `inputs/veh_dyn_info` (if used).
 * `Step 3:` (optional) Add your own reference track file in `inputs/tracks` (required file).
 * `Step 4:` (optional) Add your own friction map files in `inputs/frictionmaps` (if used).
-* `Step 5:` Adjust the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 
+* `Step 5:` (optional) If you want to consider the powertrain behavior (thermal behavior, power loss, State of Charge),
+enable the powertrain-option in the params file (`/params`) and adjust the powertrain parameters as needed (if used).
+* `Step 6:` (optional) Set the number of race laps in the dict `imp_opts` in `main_globaltraj.py` and
+specify a non-regular discretization step length for faster optimization in the parameter file in `params` (if used).
+* `Step 7:` Adjust the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 
 generation process. The calculated race trajectory is stored in `outputs/traj_race_cl.csv`.
 
 IMPORTANT: For further information on the minimum time optimization have a look into the according `Readme.md` which can be
@@ -78,3 +84,9 @@ Hermansdorfer, Betz, Lienkamp\
 A Concept for Estimation and Prediction of the Tire-Road Friction Potential for an Autonomous Racecar\
 DOI: 10.1109/ITSC.2019.8917024\
 Contact person: [Leonhard Hermansdorfer](mailto:leo.hermansdorfer@tum.de).
+
+* Powertrain Behavior\
+Herrmann, Passigato, Betz, Lienkamp\
+Minimum Race-Time Planning-Strategy for an Autonomous Electric Racecar\
+In Press\
+Contact person: [Thomas Herrmann](mailto:thomas.herrmann@tum.de).

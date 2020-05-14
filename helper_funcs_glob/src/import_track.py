@@ -7,6 +7,8 @@ def import_track(file_path: str,
     """
     Created by:
     Alexander Heilmeier
+    Modified by:
+    Thomas Herrmann
 
     Documentation:
     This function includes the algorithm part connected to the import of the track.
@@ -41,6 +43,10 @@ def import_track(file_path: str,
 
     else:
         raise IOError("Track file cannot be read!")
+
+    refline_ = np.tile(refline_, (imp_opts["num_laps"], 1))
+    w_tr_r = np.tile(w_tr_r, imp_opts["num_laps"])
+    w_tr_l = np.tile(w_tr_l, imp_opts["num_laps"])
 
     # assemble to a single array
     reftrack_imp = np.column_stack((refline_, w_tr_r, w_tr_l))

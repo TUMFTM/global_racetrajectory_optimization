@@ -105,6 +105,16 @@ ENV/
 env.bak/
 venv.bak/
 
+opt_energy_constraints/src/\.mypy_cache/
+
+comp_approx/DATA\.mat
+
+*.mat
+
+venv/
+
+comp_approx/data/
+
 # Spyder project settings
 .spyderproject
 .spyproject
