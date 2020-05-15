@@ -89,5 +89,5 @@ Contact person: [Fabian Christ](mailto:fabian.christ@tum.de).
 * Powertrain Behavior\
 Herrmann, Passigato, Betz, Lienkamp\
 Minimum Race-Time Planning-Strategy for an Autonomous Electric Racecar\
-In Press\
+In Press, https://arxiv.org/abs/2005.07127 \
 Contact person: [Thomas Herrmann](mailto:thomas.herrmann@tum.de).
