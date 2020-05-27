@@ -48,11 +48,8 @@ imp_opts = {"flip_imp_track": False,                # flip imported track to rev
             "set_new_start": False,                 # set new starting point (changes order, not coordinates)
             "new_start": np.array([0.0, -47.0]),    # [x_m, y_m]
             "min_track_width": None,                # [m] minimum enforced track width (set None to deactivate)
-            "num_laps": 1,                          # number of laps to be driven (significant with powertrain-option),
+            "num_laps": 1}                          # number of laps to be driven (significant with powertrain-option),
                                                     # only relevant in mintime-optimization
-            "cone_mode": False}                     # if True, detect single cone in track widths and inflate region
-#                                                     before / after that cone to avoid that the planner is constrainted
-#                                                     to the corridor which would lead to curvature oscillations
 
 # set optimization type ------------------------------------------------------------------------------------------------
 # 'shortest_path'       shortest path optimization
@@ -246,8 +243,7 @@ reftrack_interp, normvec_normalized_interp, a_interp, coeffs_x_interp, coeffs_y_
                                                 reg_smooth_opts=pars["reg_smooth_opts"],
                                                 stepsize_opts=pars["stepsize_opts"],
                                                 debug=debug,
-                                                min_width=imp_opts["min_track_width"],
-                                                cone_mode=imp_opts["cone_mode"])
+                                                min_width=imp_opts["min_track_width"])
 
 # ----------------------------------------------------------------------------------------------------------------------
 # CALL OPTIMIZATION ----------------------------------------------------------------------------------------------------
@@ -337,8 +333,7 @@ if opt_type == 'mintime' and mintime_opts["reopt_mintime_solution"]:
                                                     reg_smooth_opts=pars["reg_smooth_opts"],
                                                     stepsize_opts=pars["stepsize_opts"],
                                                     debug=False,
-                                                    min_width=imp_opts["min_track_width"],
-                                                    cone_mode=imp_opts["cone_mode"])[:3]
+                                                    min_width=imp_opts["min_track_width"])[:3]
 
     # set artificial track widths for reoptimization
     w_tr_tmp = 0.5 * pars["optim_opts"]["w_tr_reopt"] * np.ones(reftrack_interp.shape[0])
