@@ -11,7 +11,7 @@ The results can look like the following plot. It shows the temperatures of the
 - cooling liquid for the motor-inverter circuit <img src="https://latex.codecogs.com/gif.latex?T_\mathrm{Fluid_{MI}}" />,
 - cooling liquid for the battery circuit <img src="https://latex.codecogs.com/gif.latex?T_\mathrm{Fluid}_{B}" />.
 
-![Raceline for the Berlin FE track considering variable friction values](powertrain_temperatures.png)
+![Powertrain component temperatures whilst driving one race lap on the Berlin (Germany) Formel E track.](component_temperatures.PNG)
 
 # References
 Powertrain Behavior\
