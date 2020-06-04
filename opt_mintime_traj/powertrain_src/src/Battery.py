@@ -131,7 +131,7 @@ class BattModel:
         """
 
         self.dtemp = \
-            sf * ((self.p_loss_total - self.r_batt_inverse * (self.temp_batt - temp_cool_b)) /
+            sf * ((self.p_loss_total * 1000 - self.r_batt_inverse * (self.temp_batt - temp_cool_b)) /
                   (self.pars["C_therm_cell"] * self.pars["N_cells_serial"] * self.pars["N_cells_parallel"]))
 
     def get_soc(self,
@@ -180,7 +180,7 @@ class BattModel:
             self.p_internal_batt = 0.001 * p_internal_batt
 
             # Battery loss [kW]
-            self.p_loss_total = p_internal_batt * 0.001 - p_in_inv
+            self.p_loss_total = self.p_internal_batt - p_in_inv
 
             # Battery output [kW] = input in all inverters in the powertrain
             self.p_out_batt = p_in_inv

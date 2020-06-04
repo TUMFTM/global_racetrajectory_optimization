@@ -105,7 +105,8 @@ class InverterModel:
         temp_cool_12: intermediate temperature within motor-inverter cooling circuit (radiator-motor)  [°C]
         """
 
-        self.dtemp = sf * ((self.p_loss_total - (self.temp_inv - (temp_cool_mi + temp_cool_12) / 2) / self.r_inv)
+        self.dtemp = sf * ((self.p_loss_total * 1000 - (self.temp_inv - (temp_cool_mi + temp_cool_12) / 2)
+                            / self.r_inv)
                            / (self.pars["C_therm_inv"]))
 
     def get_loss(self,

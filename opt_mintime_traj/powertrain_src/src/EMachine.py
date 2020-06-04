@@ -134,7 +134,8 @@ class EMachineModel:
         temp_cool_13: intermediate temperature within motor-inverter cooling circuit (motor-inverter) [°C]
         """
 
-        self.dtemp = sf * ((self.p_loss_total - (self.temp_mot - (temp_cool_12 + temp_cool_13) / 2) / self.r_machine)
+        self.dtemp = sf * ((self.p_loss_total * 1000 - (self.temp_mot - (temp_cool_12 + temp_cool_13) / 2)
+                            / self.r_machine)
                            / (self.pars["C_therm_machine"]))
 
     def get_loss(self,
