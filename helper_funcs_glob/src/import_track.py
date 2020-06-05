@@ -14,7 +14,7 @@ def import_track(file_path: str,
     This function includes the algorithm part connected to the import of the track.
 
     Inputs:
-    file_path:      file path of track.csv containing [x_m;y_m;w_right_m;w_left_m]
+    file_path:      file path of track.csv containing [x_m,y_m,w_tr_right_m,w_tr_left_m]
     imp_opts:       import options showing if a new starting point should be set or if the direction should be reversed
     width_veh:      vehicle width required to check against track width
 
@@ -23,7 +23,7 @@ def import_track(file_path: str,
     """
 
     # load data from csv file
-    csv_data_temp = np.loadtxt(file_path, delimiter=';')
+    csv_data_temp = np.loadtxt(file_path, comments='#', delimiter=',')
 
     # get coords and track widths out of array
     if np.shape(csv_data_temp)[1] == 3:
