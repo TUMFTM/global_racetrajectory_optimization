@@ -137,16 +137,19 @@ def result_plots(plot_opts: dict,
         plt.show()
 
     if plot_opts["spline_normals"]:
-        # plot normals
         plt.figure()
+
+        plt.plot(refline[:, 0], refline[:, 1], 'k-')
         for i in range(bound1_interp.shape[0]):
             temp = np.vstack((bound1_interp[i], bound2_interp[i]))
-            plt.plot(temp[:, 0], temp[:, 1], "k-", linewidth=0.7)
+            plt.plot(temp[:, 0], temp[:, 1], "r-", linewidth=0.7)
+
         plt.grid()
         ax = plt.gca()
         ax.set_aspect("equal", "datalim")
         plt.xlabel("east in m")
         plt.ylabel("north in m")
+
         plt.show()
 
 

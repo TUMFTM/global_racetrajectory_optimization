@@ -471,8 +471,8 @@ if lap_time_mat_opts["use_lap_time_mat"]:
                                  v_max=top_speed,
                                  kappa=kappa_opt,
                                  el_lengths=el_lengths_opt_interp,
-                                 dyn_model_exp=pars["optim_opts"]["dyn_model_exp"],
-                                 filt_window=pars["optim_opts"]["window_size_conv_filt"],
+                                 dyn_model_exp=pars["vel_calc_opts"]["dyn_model_exp"],
+                                 filt_window=pars["vel_calc_opts"]["vel_profile_conv_filt_window"],
                                  closed=True,
                                  drag_coeff=pars["veh_params"]["dragcoeff"],
                                  m_veh=pars["veh_params"]["mass"])

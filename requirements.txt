@@ -4,4 +4,4 @@ trajectory_planning_helpers==0.67
 # the following is required for minimum time optimization only
 casadi==3.5.1
 scipy==1.3.3
-sklearn==0.0
+scikit-learn==0.23.1
