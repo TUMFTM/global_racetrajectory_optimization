@@ -1,5 +1,13 @@
-# Python version
-Our code is tested with Python 3.5.2
+# Introduction
+This repository contains algorithms that allow us to determine an optimal racing line on a race track. You can chose
+between several objectives:
+* Shortest path
+* Minimum curvature (with or without iterative call)
+* Minimum time
+
+The minimum curvature line is quite near to a minimum time line in corners but will differ as soon as the car's
+acceleration limits are not exploited. However, the minimum time optimization requires a lot more parameters and takes
+more computation time. Please look into the `main_globaltraj.py` for all possible options.
 
 # List of components
 * `frictionmap`: This package contains the functions related to the creation and handling of friction maps along the
@@ -7,18 +15,21 @@ race track.
 * `helper_funcs_glob`: This package contains some helper functions used in several other functions when 
 calculating the global race trajectory.
 * `inputs`: This folder contains the vehicle dynamics information, the reference track csvs and friction maps.
-* `opt_mintime_traj`: This package contains the functions required to find the time-optimal trajectory including the
-powertrain components in `/powertrain_src`  used to calculate power losses, the thermal behavior of the powertrain and
-to consider the state of charge of the battery.
+* `opt_mintime_traj`: This package contains the functions required to find the time-optimal trajectory. It also includes
+the powertrain components in `opt_mintime_traj/powertrain_src` used to calculate power losses and thermal behavior of
+the powertrain and to consider the state of charge of the battery.
 * `params`: This folder contains a parameter file with optimization and vehicle parameters.
 
 # Trajectory Planning Helpers repository
 Lots of the required functions for trajectory planning are cumulated in our trajectory planning helpers repository. It
-can be found on https://github.com/TUMFTM/trajectory_planning_helpers. They can be quite useful for other projects as well.
+can be found on https://github.com/TUMFTM/trajectory_planning_helpers. They can be quite useful for other projects as
+well.
 
 # Dependencies
 Use the provided `requirements.txt` in the root directory of this repo, in order to install all required modules.\
 `pip3 install -r /path/to/requirements.txt`
+
+The code is developed with Python 3.7.
 
 ### Solutions for possible installation problems (Windows)
 `cvxpy`, `cython` or any other package requires a `Visual C++ compiler` -> Download the build tools for Visual Studio
@@ -37,18 +48,18 @@ minimum curvature planner. However, this is currently not supported from our sid
 
 # Running the code
 * `Step 1:` (optional) Adjust the parameter file that can be found in the `params` folder (required file).
-* `Step 2:` (optional) Adjust the ggv diagram and ax_max_machines files in `inputs/veh_dyn_info` (if used).
+* `Step 2:` (optional) Adjust the ggv diagram and ax_max_machines file in `inputs/veh_dyn_info` (if used).
 * `Step 3:` (optional) Add your own reference track file in `inputs/tracks` (required file).
 * `Step 4:` (optional) Add your own friction map files in `inputs/frictionmaps` (if used).
-* `Step 5:` (optional) If you want to consider the powertrain behavior (thermal behavior, power loss, State of Charge),
-enable the powertrain-option in the params file (`/params`) and adjust the powertrain parameters as needed (if used).
-* `Step 6:` (optional) Set the number of race laps in the dict `imp_opts` in `main_globaltraj.py` and
-specify a non-regular discretization step length for faster optimization in the parameter file in `params` (if used).
-* `Step 7:` Adjust the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 
+* `Step 5:` (optional) If you want to consider the powertrain behavior (thermal behavior, power loss, state of charge),
+enable the powertrain-option in the parameter file (`/params`) and adjust the powertrain parameters as needed. Set the
+number of race laps in the dict `imp_opts` in `main_globaltraj.py` and specify a non-regular discretization step length
+for faster optimization in the parameter file (`/params`) (if used).
+* `Step 6:` Adjust the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 
 generation process. The calculated race trajectory is stored in `outputs/traj_race_cl.csv`.
 
-IMPORTANT: For further information on the minimum time optimization have a look into the according `Readme.md` which can be
-found in the `opt_mintime_traj` folder!
+IMPORTANT: For further information on the minimum time optimization have a look into the according `Readme.md` which can
+be found in the `opt_mintime_traj` folder!
 
 ![Resulting raceline for the Berlin FE track](opt_raceline_berlin.png)
 
@@ -56,15 +67,16 @@ found in the `opt_mintime_traj` folder!
 We tried to keep a consistant wording for the variable names:
 * path -> [x, y] Describes any array containing x,y coordinates of points (i.e. point coordinates).\
 * refline -> [x, y] A path that is used as reference line during our calculations.\
-* reftrack -> [x, y, w_tr_right, w_tr_left] An array that contains not only the reference line information but also right
-and left track widths. In our case it contains the race track that is used as a basis for the raceline optimization.
+* reftrack -> [x, y, w_tr_right, w_tr_left] An array that contains not only the reference line information but also
+right and left track widths. In our case it contains the race track that is used as a basis for the raceline
+optimization.
 
-Normal vectors usually point to the right in the direction of driving. Therefore, we get the track boundaries by
+Our normal vectors usually point to the right in the direction of driving. Therefore, we get the track boundaries by
 multiplication as follows: norm_vector * w_tr_right, -norm_vector * w_tr_left.
 
-# Trajectory interface definition
-The output csv contains the global race trajectory. The array is of size
-[no_points x 7] where no_points depends on stepsize and track length. The seven columns are structured as follows:
+# Trajectory definition
+The output csv contains the global race trajectory. The array is of size [no_points x 7] where no_points depends on
+stepsize and track length. The seven columns are structured as follows:
 
 * `s_m`: float32, meter. Curvi-linear distance along the raceline.
 * `x_m`: float32, meter. X-coordinate of raceline point.
@@ -97,5 +109,5 @@ Contact person: [Leonhard Hermansdorfer](mailto:leo.hermansdorfer@tum.de).
 * Powertrain Behavior\
 Herrmann, Passigato, Betz, Lienkamp\
 Minimum Race-Time Planning-Strategy for an Autonomous Electric Racecar\
-In Press, https://arxiv.org/abs/2005.07127 \
+In Press\
 Contact person: [Thomas Herrmann](mailto:thomas.herrmann@tum.de).
