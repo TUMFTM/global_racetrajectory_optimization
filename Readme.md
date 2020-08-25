@@ -75,6 +75,19 @@ Our normal vectors usually point to the right in the direction of driving. There
 multiplication as follows: norm_vector * w_tr_right, -norm_vector * w_tr_left.
 
 # Trajectory definition
+The global racetrajectory optimization currently supports two output formats:
+
+* *Race Trajectory* - (default) holds detailed information about the race trajectory.
+* *LTPL Trajectory* - holds source information about the race trajectory as well as information about the track bounds
+  and tue reference line (the actual race trajectory has to be calculated based on the stored information).
+
+In order to en-/disable the export of any of these files, add the respective entry to the 'file_paths'-dict in the
+'main_globtraj.py'-script (search for '# assemble export paths'). By the fault, the file path for the 'LTPL Trajectory'
+is commented out.
+
+Details about the individual formats are given in the following.
+
+### Race Trajectory
 The output csv contains the global race trajectory. The array is of size [no_points x 7] where no_points depends on
 stepsize and track length. The seven columns are structured as follows:
 
@@ -85,7 +98,30 @@ stepsize and track length. The seven columns are structured as follows:
 * `kappa_radpm`: float32, rad/meter. Curvature of raceline in current point.
 * `vx_mps`: float32, meter/second. Target velocity in current point.
 * `ax_mps2`: float32, meter/second². Target acceleration in current point. We assume this acceleration to be constant
-from current point until next point.
+  from current point until next point.
+
+### LTPL Trajectory
+The output csv contains the source information of the global race trajectory and map information via the normal vecotrs.
+The array is of size [no_points x 12] where no_points depends on stepsize and track length. The seven columns are
+structured as follows:
+
+* `x_ref_m`: float32, meter. X-coordinate of reference line point (e.g. center line of the track).
+* `y_ref_m`: float32, meter. Y-coordinate of reference line point (e.g. center line of the track).
+* `width_right_m`: float32, meter. Distance between reference line point and right track bound (along normal vector).
+* `width_left_m`: float32, meter. Distance between reference line point and left track bound (along normal vector).
+* `x_normvec_m`: float32, meter. X-coordinate of the normalized normal vector based on the reference line point.
+* `y_normvec_m`: float32, meter. Y-coordinate of the normalized normal vector based on the reference line point.
+* `alpha_m`: float32, meter. Solution of the opt. problem holding the lateral shift in m for the reference line point.
+* `s_racetraj_m`: float32, meter. Curvi-linear distance along the race line.
+* `psi_racetraj_rad`: float32, rad. Heading of raceline in current point from -pi to +pi rad. Zero is north.
+* `kappa_racetraj_radpm`: float32, rad/meter. Curvature of raceline in current point.
+* `vx_racetraj_mps`: float32, meter/second. Target velocity in current point.
+* `ax_racetraj_mps2`: float32, meter/second². Target acceleration in current point. We assume this acceleration to be
+  constant from current point until next point.
+  
+The generated file can be directly imported by the
+[graph-based local trajectory planner](https://github.com/TUMFTM/GraphBasedLocalTrajectoryPlanner).
+
 
 # References
 * Minimum Curvature Trajectory Planning\

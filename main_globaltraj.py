@@ -148,6 +148,7 @@ if opt_type == 'mintime':
 # assemble export paths
 file_paths["mintime_export"] = os.path.join(file_paths["module"], "outputs", "mintime")
 file_paths["traj_race_export"] = os.path.join(file_paths["module"], "outputs", "traj_race_cl.csv")
+# file_paths["traj_ltpl_export"] = os.path.join(file_paths["module"], "outputs", "traj_ltpl_cl.csv")
 file_paths["lap_time_mat_export"] = os.path.join(file_paths["module"], "outputs", lap_time_mat_opts["file"])
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -536,9 +537,19 @@ bound1, bound2 = helper_funcs_glob.src.check_traj.\
 # EXPORT ---------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 
-# export data to CSVs
-helper_funcs_glob.src.export_traj.export_traj(file_paths=file_paths,
-                                              traj_race=traj_race_cl)
+# export race trajectory  to CSV
+if "traj_race_export" in file_paths.keys():
+    helper_funcs_glob.src.export_traj_race.export_traj_race(file_paths=file_paths,
+                                                            traj_race=traj_race_cl)
+
+# if requested, export trajectory including map information (via normal vectors) to CSV
+if "traj_ltpl_export" in file_paths.keys():
+    helper_funcs_glob.src.export_traj_ltpl.export_traj_ltpl(file_paths=file_paths,
+                                                            spline_lengths_opt=spline_lengths_opt,
+                                                            trajectory_opt=trajectory_opt,
+                                                            reftrack=reftrack_interp,
+                                                            normvec_normalized=normvec_normalized_interp,
+                                                            alpha_opt=alpha_opt)
 
 print("INFO: Finished export of trajectory:", time.strftime("%H:%M:%S"))
 
