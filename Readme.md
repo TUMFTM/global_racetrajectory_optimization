@@ -82,8 +82,8 @@ The global racetrajectory optimization currently supports two output formats:
   and tue reference line (the actual race trajectory has to be calculated based on the stored information).
 
 In order to en-/disable the export of any of these files, add the respective entry to the 'file_paths'-dict in the
-'main_globtraj.py'-script (search for '# assemble export paths'). By the fault, the file path for the 'LTPL Trajectory'
-is commented out.
+'main_globtraj.py'-script (search for `# assemble export paths`). By the default, the file path for the
+'LTPL Trajectory' is commented out.
 
 Details about the individual formats are given in the following.
 
@@ -101,8 +101,8 @@ stepsize and track length. The seven columns are structured as follows:
   from current point until next point.
 
 ### LTPL Trajectory
-The output csv contains the source information of the global race trajectory and map information via the normal vecotrs.
-The array is of size [no_points x 12] where no_points depends on stepsize and track length. The seven columns are
+The output csv contains the source information of the global race trajectory and map information via the normal vectors.
+The array is of size [no_points x 12] where no_points depends on step size and track length. The seven columns are
 structured as follows:
 
 * `x_ref_m`: float32, meter. X-coordinate of reference line point (e.g. center line of the track).
