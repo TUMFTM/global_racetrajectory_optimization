@@ -48,8 +48,7 @@ def prep_track(reftrack_imp: np.ndarray,
     refpath_interp_cl = np.vstack((reftrack_interp[:, :2], reftrack_interp[0, :2]))
 
     coeffs_x_interp, coeffs_y_interp, a_interp, normvec_normalized_interp = tph.calc_splines.\
-        calc_splines(path=refpath_interp_cl,
-                     use_dist_scaling=False)
+        calc_splines(path=refpath_interp_cl)
 
     # ------------------------------------------------------------------------------------------------------------------
     # CHECK SPLINE NORMALS FOR CROSSING POINTS -------------------------------------------------------------------------

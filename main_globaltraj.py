@@ -566,8 +566,7 @@ if plot_opts["imported_bounds"]:
     n_skip = max(int(reftrack_imp.shape[0] / (bound1.shape[0] * 4)), 1)
 
     _, _, _, normvec_imp = tph.calc_splines.calc_splines(path=np.vstack((reftrack_imp[::n_skip, 0:2],
-                                                                         reftrack_imp[0, 0:2])),
-                                                         use_dist_scaling=False)
+                                                                         reftrack_imp[0, 0:2])))
 
     bound1_imp = reftrack_imp[::n_skip, :2] + normvec_imp * np.expand_dims(reftrack_imp[::n_skip, 2], 1)
     bound2_imp = reftrack_imp[::n_skip, :2] - normvec_imp * np.expand_dims(reftrack_imp[::n_skip, 3], 1)

@@ -72,8 +72,7 @@ def opt_mintime(reftrack: np.ndarray,
 
         # relcalculate splines
         refpath_cl = np.vstack((reftrack[:, :2], reftrack[0, :2]))
-        coeffs_x, coeffs_y, a_interp, normvectors = tph.calc_splines.calc_splines(path=refpath_cl,
-                                                                                  use_dist_scaling=False)
+        coeffs_x, coeffs_y, a_interp, normvectors = tph.calc_splines.calc_splines(path=refpath_cl)
 
     else:
         discr_points = np.arange(reftrack.shape[0])
