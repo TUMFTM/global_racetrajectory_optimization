@@ -49,7 +49,8 @@ minimum curvature planner. However, this is currently not supported from our sid
 
 # Running the code
 * `Step 1:` (optional) Adjust the parameter file that can be found in the `params` folder (required file).
-* `Step 2:` (optional) Adjust the ggv diagram and ax_max_machines file in `inputs/veh_dyn_info` (if used).
+* `Step 2:` (optional) Adjust the ggv diagram and ax_max_machines file in `inputs/veh_dyn_info` (if used). This
+acceleration should be calculated without drag resistance, i.e. simply by F_x_drivetrain / m_veh!
 * `Step 3:` (optional) Add your own reference track file in `inputs/tracks` (required file).
 * `Step 4:` (optional) Add your own friction map files in `inputs/frictionmaps` (if used).
 * `Step 5:` (optional) If you want to consider the powertrain behavior (thermal behavior, power loss, state of charge),
