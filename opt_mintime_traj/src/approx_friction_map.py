@@ -155,6 +155,14 @@ def approx_friction_map(reftrack: np.ndarray,
 # uniformly spaced Gaussian features for one-dimensional input
 class GaussianFeatures(BaseEstimator, TransformerMixin):
     def __init__(self, N, width_factor=2.0):
+        """
+        Initialize n timeseries.
+
+        Args:
+            self: (todo): write your description
+            N: (int): write your description
+            width_factor: (float): write your description
+        """
         self.N = N
         self.width_factor = width_factor
         self.centers_ = None
@@ -162,16 +170,40 @@ class GaussianFeatures(BaseEstimator, TransformerMixin):
 
     @staticmethod
     def _gauss_basis(x, y, width, axis=None):
+        """
+        Return a gaussian basis.
+
+        Args:
+            x: (todo): write your description
+            y: (todo): write your description
+            width: (int): write your description
+            axis: (int): write your description
+        """
         arg = (x - y) / width
         return np.exp(-0.5 * np.sum(arg ** 2, axis))
 
     def fit(self, X, y=None):
+        """
+        Fit the model parameters ---------- x : np.
+
+        Args:
+            self: (todo): write your description
+            X: (array): write your description
+            y: (array): write your description
+        """
         # create N centers spread along the data range
         self.centers_ = np.linspace(X.min(), X.max(), self.N)
         self.width_ = self.width_factor * (self.centers_[1] - self.centers_[0])
         return self
 
     def transform(self, X):
+        """
+        Compute the centroid.
+
+        Args:
+            self: (todo): write your description
+            X: (array): write your description
+        """
         return self._gauss_basis(X[:, :, np.newaxis], self.centers_, self.width_, axis=1)
 
 

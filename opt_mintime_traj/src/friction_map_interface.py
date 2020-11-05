@@ -25,6 +25,14 @@ class FrictionMapInterface:
     def __init__(self,
                  tpamap_path: str,
                  tpadata_path: str) -> None:
+        """
+        Initialize tpaaml file.
+
+        Args:
+            self: (todo): write your description
+            tpamap_path: (str): write your description
+            tpadata_path: (str): write your description
+        """
 
         # load friction map (only contains x,y coordinates and the corresponding grid cell indices) and
         # friction data (contains coefficient of friction for each grid cell adressed by its index)
