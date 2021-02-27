@@ -99,7 +99,7 @@ def result_plots(plot_opts: dict,
         ax.plot(trajectory[:, 1], trajectory[:, 2], "r-", linewidth=0.7)
 
         ax.grid()
-        ax.set_aspect("equal")
+        ax.set_aspect("auto")
         ax.set_xlabel("east in m")
         ax.set_ylabel("north in m")
 
