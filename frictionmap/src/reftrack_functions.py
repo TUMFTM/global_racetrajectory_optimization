@@ -25,7 +25,7 @@ def load_reftrack(path2track: str) -> np.array:
     """
 
     with open(path2track, 'r') as fh:
-        reftrack = np.genfromtxt(fh, delimiter=';')
+        reftrack = np.genfromtxt(fh, delimiter=',')
 
     return reftrack
 
