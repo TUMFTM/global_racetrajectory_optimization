@@ -452,8 +452,25 @@ def result_plots_mintime(pars: dict,
                         r'$\it{P_\mathrm{loss,battery}}$'])
             plt.ylabel('Power loss ' + r'$\it{P_\mathrm{loss}}$' + ' in ' + r'kW')
         else:
-            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
-            exit(1)
+            plt.figure(12)
+            plt.subplot(311)
+            plt.plot(s[:-1], pwr["machine"].p_loss_total)
+            plt.plot(s[:-1], pwr["machine"].p_loss_copper)
+            plt.plot(s[:-1], pwr["machine"].p_loss_stator_iron)
+            plt.plot(s[:-1], pwr["machine"].p_loss_rotor)
+            plt.ylabel('Power loss single machine ' + r'$\it{P_\mathrm{loss}}$' + ' in ' + r'kW')
+            plt.legend([r'$\it{P_\mathrm{loss,total}}$', r'$\it{P_\mathrm{loss,copper}}$',
+                        r'$\it{P_\mathrm{loss,statorIron}}$', r'$\it{P_\mathrm{loss,rotor}}$'])
+            plt.subplot(312)
+            plt.plot(s[:-1], pwr["inverter"].p_loss_total)
+            plt.plot(s[:-1], pwr["inverter"].p_loss_switch)
+            plt.plot(s[:-1], pwr["inverter"].p_loss_cond)
+            plt.legend([r'$\it{P_\mathrm{loss,total}}$', r'$\it{P_\mathrm{loss,switching}}$',
+                        r'$\it{P_\mathrm{loss,conducting}}$'])
+            plt.ylabel('Power loss single inverter ' + r'$\it{P_\mathrm{loss}}$' + ' in ' + r'kW')
+            plt.subplot(313)
+            plt.plot(s[:-1], pwr["batt"].p_loss_total)
+            plt.ylabel('Power loss battery ' + r'$\it{P_\mathrm{loss}}$' + ' in ' + r'kW')
 
         plt.xlabel('distance ' + r'$\it{s}$' + ' in ' + r'$\it{m}$')
         plt.grid()

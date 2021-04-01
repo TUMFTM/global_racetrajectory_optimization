@@ -400,6 +400,9 @@ def opt_mintime(reftrack: np.ndarray,
         # Calculate total power loss for all inverters in vehicle [kW]
         inverter.get_inverters_cum_losses()
 
+        # Get internal battery resistance [Ohm]
+        batt.internal_resistance()
+
         # Get battery loss power [kW], output power [kW] and output current [A]
         batt.battery_loss(p_des=p_des,
                           p_loss_mot=machine.p_loss_total_all_machines,

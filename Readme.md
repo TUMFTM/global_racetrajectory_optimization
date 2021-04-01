@@ -4,6 +4,7 @@ between several objectives:
 * Shortest path
 * Minimum curvature (with or without iterative call)
 * Minimum time
+* Minimum time with powertrain behavior consideration
 
 The minimum curvature line is quite near to a minimum time line in corners but will differ as soon as the car's
 acceleration limits are not exploited. However, the minimum time optimization requires a lot more parameters and takes
@@ -15,9 +16,10 @@ race track.
 * `helper_funcs_glob`: This package contains some helper functions used in several other functions when 
 calculating the global race trajectory.
 * `inputs`: This folder contains the vehicle dynamics information, the reference track csvs and friction maps.
-* `opt_mintime_traj`: This package contains the functions required to find the time-optimal trajectory. It also includes
-the powertrain components in `opt_mintime_traj/powertrain_src` used to calculate power losses and thermal behavior of
-the powertrain and to consider the state of charge of the battery.
+* `opt_mintime_traj`: This package contains the functions required to find the time-optimal trajectory. 
+  
+  It also includes the powertrain components in `opt_mintime_traj/powertrain_src` used to calculate power losses and 
+  thermal behavior of the powertrain and to consider the state of charge of the battery.
 * `params`: This folder contains a parameter file with optimization and vehicle parameters.
 
 # Trajectory Planning Helpers repository
@@ -29,7 +31,7 @@ well.
 Use the provided `requirements.txt` in the root directory of this repo, in order to install all required modules.\
 `pip3 install -r /path/to/requirements.txt`
 
-The code is developed with Python 3.7.
+The code is developed with Ubuntu 20.04 LTS and Python 3.7.
 
 ### Solutions for possible installation problems (Windows)
 * `cvxpy`, `cython` or any other package requires a `Visual C++ compiler` -> Download the build tools for Visual Studio
@@ -56,7 +58,9 @@ acceleration should be calculated without drag resistance, i.e. simply by F_x_dr
 * `Step 5:` (optional) If you want to consider the powertrain behavior (thermal behavior, power loss, state of charge),
 enable the powertrain-option in the parameter file (`/params`) and adjust the powertrain parameters as needed. Set the
 number of race laps in the dict `imp_opts` in `main_globaltraj.py` and specify a non-regular discretization step length
-for faster optimization in the parameter file (`/params`) (if used).
+for faster optimization in the parameter file (`/params`) (if used). You can select a simple approximation of the 
+  powertrain components by setting `/params/racecar.ini:simple_loss = True` or consider more detailed models by 
+  specifying `/params/racecar.ini:simple_loss = False`.
 * `Step 6:` Adjust the parameters in the upper part of `main_globaltraj.py` and execute it to start the trajectory 
 generation process. The calculated race trajectory is stored in `outputs/traj_race_cl.csv`.
 

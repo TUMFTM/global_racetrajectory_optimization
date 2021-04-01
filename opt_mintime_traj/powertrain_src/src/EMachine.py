@@ -168,8 +168,42 @@ class EMachineModel:
 
         else:
 
-            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
-            exit(1)
+            temp_mot = self.temp_mot
+            omega_machine = self.omega_machine
+            i_eff = self.i_eff
+
+            # Copper loss [W]
+            p_loss_copper = \
+                (
+                 (((temp_mot - 20) * self.pars["C_TempCopper"]) + 1) * self.pars["R_Phase"]
+                ) * (i_eff ** 2) * (3 / 2)
+
+            # Stator iron loss [W]
+            p_loss_stator_iron = \
+                2.885e-13 * omega_machine ** 4 \
+                - 1.114e-08 * omega_machine ** 3 \
+                + 0.0001123 * omega_machine ** 2 \
+                + 0.1657 * omega_machine \
+                + 272
+
+            # Rotor loss [W]
+            p_loss_rotor = \
+                8.143e-14 * omega_machine ** 4 \
+                - 2.338e-09 * omega_machine ** 3 \
+                + 1.673e-05 * omega_machine ** 2 \
+                + 0.112 * omega_machine \
+                - 113.6
+
+            # Total loss [kW]
+            p_loss_total = (p_loss_copper
+                            + p_loss_stator_iron
+                            + p_loss_rotor) * 0.001
+
+            # Store losses [kW]
+            self.p_loss_copper = 0.001 * p_loss_copper
+            self.p_loss_stator_iron = 0.001 * p_loss_stator_iron
+            self.p_loss_rotor = 0.001 * p_loss_rotor
+            self.p_loss_total = p_loss_total
 
     def get_machines_cum_losses(self):
         """
@@ -241,8 +275,12 @@ class EMachineModel:
                             [x, u], [self.p_loss_total, self.p_input],
                             ['x', 'u'], ['p_loss_total', 'p_input'])
         else:
-            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
-            exit(1)
+            self.f_nlp = \
+                ca.Function('f_nlp',
+                            [x, u], [self.p_loss_total, self.p_loss_copper, self.p_loss_stator_iron, self.p_loss_rotor,
+                                     self.i_eff],
+                            ['x', 'u'], ['p_loss_total', 'p_loss_copper', 'p_loss_stator_iron', 'p_loss_rotor',
+                                         'i_eff'])
 
     def extract_sol(self,
                     w: ca.SX,
@@ -272,8 +310,19 @@ class EMachineModel:
             self.p_input = p_losses_opt[1::2]
 
         else:
-            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
-            exit(1)
+            self.f_sol = \
+                ca.Function('f_sol',
+                            [w], [self.p_losses_opt],
+                            ['w'], ['p_losses_opt'])
+
+            # Overwrite lists with optimized numeric values
+            p_losses_opt = self.f_sol(sol_states)
+
+            self.p_loss_total = p_losses_opt[0::5]
+            self.p_loss_copper = p_losses_opt[1::5]
+            self.p_loss_stator_iron = p_losses_opt[2::5]
+            self.p_loss_rotor = p_losses_opt[3::5]
+            self.i_eff = p_losses_opt[4::5]
 
 
 if __name__ == "__main__":

@@ -56,14 +56,15 @@ defined by the acceleration limits `ax_pos_safe`, `ax_neg_safe` and `ay_safe`.
 * The parameters for the two-track model can be specified in the variable `vehicle`.
 * The parameters for Pacejka's Magic Formula tire model can be specified in in the variable `tire`.
 
-Switch on the powertrain behavior in the parameter file in `/params` using dict `pwr_params_mintime`.
+Switch on the powertrain behavior in the parameter file in `/params` using dict `pwr_params_mintime` (`pwr_behavior = 
+true`).
 
 # Possible Failures
 * The trajectory planner uses the curvature of the reference line for describing the racetrack. A smooth course of the 
 curvature and its derivative speeds up the optimization and prevents the solution from oscillations. Therefore the 
 reference line of the racetrack is preprocessed by an approximate spline regression. It's recommended to check the 
 curvature input before starting optimization! If the curvature is not smooth, increase the parameter `s_reg` in the 
-`db.ini`.
+`racecar.ini`.
 * If red coloured warnings for warm start functionality appear in the terminal (e.g. WARNING: Failed to load warm start 
 files!), please check if the warm start functionality is used (`use_warm_start = True`) without or with the wrong 
 warm start files. To bypass this error, just restart the optimization without warm start functionality 
@@ -89,5 +90,6 @@ Contact person: [Fabian Christ](mailto:fabian.christ@tum.de).
 * Powertrain Behavior\
 Herrmann, Passigato, Betz, Lienkamp\
 Minimum Race-Time Planning-Strategy for an Autonomous Electric Racecar\
-In Press, https://arxiv.org/abs/2005.07127 \
+DOI: 10.1109/ITSC45102.2020.9294681
+Preprint: https://arxiv.org/abs/2005.07127 \
 Contact person: [Thomas Herrmann](mailto:thomas.herrmann@tum.de).

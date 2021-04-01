@@ -93,8 +93,23 @@ def export_mintime_solution(file_path: str,
                                  pwr["inverter"].p_loss_total,
                                  pwr["batt"].p_loss_total, pwr["batt"].p_out_batt))
         else:
-            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
-            exit(1)
+            header_pwr_l = \
+                ("s_m; t_s; "
+                 "P_loss_1machine_kW; P_loss_copper_1machine_kW; "
+                 "P_loss_statorIron_1machine_kW; P_loss_rotor_1machine_kW; "
+                 "P_loss_1inverter_kW; P_loss_switch_1inverter_kW; P_loss_cond_1inverter; "
+                 "P_loss_batt_kW; P_out_batt_kW")
+            fmt_pwr_l = ("%.1f; %.3f; "
+                         "%.2f; %.2f; "
+                         "%.2f; %.2f; "
+                         "%.2f; %.2f; %.2f; "
+                         "%.2f; %.2f")
+            pwr_losses = \
+                np.column_stack((s[:-1], t[:-1],
+                                 pwr["machine"].p_loss_total, pwr["machine"].p_loss_copper,
+                                 pwr["machine"].p_loss_stator_iron, pwr["machine"].p_loss_rotor,
+                                 pwr["inverter"].p_loss_total, pwr["inverter"].p_loss_switch, pwr["inverter"].p_loss_cond,
+                                 pwr["batt"].p_loss_total, pwr["batt"].p_out_batt))
 
         np.savetxt(os.path.join(file_path, 'power_losses.csv'), pwr_losses, fmt=fmt_pwr_l, header=header_pwr_l)
 

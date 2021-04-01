@@ -142,8 +142,20 @@ class InverterModel:
 
         else:
 
-            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
-            exit(1)
+            # Power loss switching [W]
+            p_loss_switch = (v_dc / self.pars["V_ref"]) \
+                * ((3 * self.pars["f_sw"]) * (i_eff / self.pars["I_ref"])
+                   * (self.pars["E_on"] + self.pars["E_off"] + self.pars["E_rr"]))
+
+            # Power loss conducting [W]
+            p_loss_cond = 3 * i_eff * (self.pars["V_ce_offset"] + (self.pars["V_ce_slope"] * i_eff))
+
+            # Loss effects [kW]
+            self.p_loss_switch = 0.001 * p_loss_switch
+            self.p_loss_cond = 0.001 * p_loss_cond
+
+            # Total loss [kW]
+            self.p_loss_total = (p_loss_switch + p_loss_cond) * 0.001
 
     def get_inverters_cum_losses(self):
         """
@@ -189,9 +201,10 @@ class InverterModel:
                             [x, u], [self.p_loss_total, self.p_in_inv],
                             ['x', 'u'], ['p_loss_total', 'p_inv_in'])
         else:
-
-            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
-            exit(1)
+            self.f_nlp = \
+                ca.Function('f_nlp',
+                            [x, u], [self.p_loss_total, self.p_loss_switch, self.p_loss_cond],
+                            ['x', 'u'], ['p_loss_total', 'p_loss_switch', 'p_loss_cond'])
 
     def extract_sol(self,
                     w: ca.SX,
@@ -221,9 +234,18 @@ class InverterModel:
             self.p_in_inv = p_losses_opt[1::2]
 
         else:
+            self.f_sol = \
+                ca.Function('f_sol',
+                            [w], [self.p_losses_opt],
+                            ['w'], ['p_losses_opt'])
 
-            print('\033[91m' + 'ERROR: Chosen powertrain loss option unknown!' + '\033[0m')
-            exit(1)
+            # Overwrite lists with optimized numeric values
+            p_losses_opt = self.f_sol(sol_states)
+
+            self.p_loss_total = p_losses_opt[0::3]
+            self.p_loss_switch = p_losses_opt[1::3]
+            self.p_loss_cond = p_losses_opt[2::3]
+
 
 if __name__ == "__main__":
     pass
