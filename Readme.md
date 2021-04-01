@@ -151,5 +151,6 @@ Contact person: [Leonhard Hermansdorfer](mailto:leo.hermansdorfer@tum.de).
 * Powertrain Behavior\
 Herrmann, Passigato, Betz, Lienkamp\
 Minimum Race-Time Planning-Strategy for an Autonomous Electric Racecar\
-In Press\
+DOI: 10.1109/ITSC45102.2020.9294681\
+Preprint: https://arxiv.org/abs/2005.07127\
 Contact person: [Thomas Herrmann](mailto:thomas.herrmann@tum.de).
