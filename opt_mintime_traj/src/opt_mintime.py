@@ -778,12 +778,18 @@ def opt_mintime(reftrack: np.ndarray,
 
         # path constraint: safe trajectories with acceleration ellipse
         if pars["optim_opts"]["safe_traj"]:
-            g.append((ca.fmax(axk, 0) / pars["optim_opts"]["ax_pos_safe"]) ** 2
-                     + (ayk / pars["optim_opts"]["ay_safe"]) ** 2)
-            g.append((ca.fmin(axk, 0) / pars["optim_opts"]["ax_neg_safe"]) ** 2
-                     + (ayk / pars["optim_opts"]["ay_safe"]) ** 2)
-            lbg.append([0.0] * 2)
-            ubg.append([1.0] * 2)
+            if pars["optim_opts"]["ax_neg_safe"] == -pars["optim_opts"]["ax_pos_safe"]:
+                g.append((axk / pars["optim_opts"]["ax_pos_safe"]) ** 2
+                        + (ayk / pars["optim_opts"]["ay_safe"]) ** 2)
+                lbg.append([0.0])
+                ubg.append([1.0])
+            else:
+                g.append((ca.fmax(axk, 0) / pars["optim_opts"]["ax_pos_safe"]) ** 2
+                        + (ayk / pars["optim_opts"]["ay_safe"]) ** 2)
+                g.append((ca.fmin(axk, 0) / pars["optim_opts"]["ax_neg_safe"]) ** 2
+                        + (ayk / pars["optim_opts"]["ay_safe"]) ** 2)
+                lbg.append([0.0] * 2)
+                ubg.append([1.0] * 2)
 
         # append controls (for regularization)
         delta_p.append(Uk[0] * delta_s)
