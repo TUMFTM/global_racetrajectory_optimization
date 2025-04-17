@@ -6,7 +6,7 @@ between several objectives:
 * Minimum time
 * Minimum time with powertrain behavior consideration
 
-The minimum curvature line is quite near to a minimum time line in corners but will differ as soon as the car's
+The minimum curvature line is quite near to a minimum time line in corners, but will differ as soon as the car's
 acceleration limits are not exploited. However, the minimum time optimization requires a lot more parameters and takes
 more computation time. Please look into the `main_globaltraj.py` for all possible options.
 
@@ -15,23 +15,92 @@ more computation time. Please look into the `main_globaltraj.py` for all possibl
 race track.
 * `helper_funcs_glob`: This package contains some helper functions used in several other functions when 
 calculating the global race trajectory.
-* `inputs`: This folder contains the vehicle dynamics information, the reference track csvs and friction maps.
+* `inputs`: This folder contains the vehicle dynamics information, the reference track CSVs, and friction maps.
 * `opt_mintime_traj`: This package contains the functions required to find the time-optimal trajectory. 
   
-  It also includes the powertrain components in `opt_mintime_traj/powertrain_src` used to calculate power losses and 
-  thermal behavior of the powertrain and to consider the state of charge of the battery.
+  It also includes the powertrain components in `opt_mintime_traj/powertrain_src,` used to calculate power losses and 
+  thermal behavior of the powertrain and consider the battery's state of charge.
 * `params`: This folder contains a parameter file with optimization and vehicle parameters.
 
 # Trajectory Planning Helpers repository
-Lots of the required functions for trajectory planning are cumulated in our trajectory planning helpers repository. It
+The required functions for trajectory planning are compiled in our trajectory planning helpers repository. It
 can be found on https://github.com/TUMFTM/trajectory_planning_helpers. They can be quite useful for other projects as
 well.
 
 # Dependencies
-Use the provided `requirements.txt` in the root directory of this repo, in order to install all required modules.\
-`pip3 install -r /path/to/requirements.txt`
+Use the provided `requirements.txt` in the root directory of this repo to install all required modules.
 
-The code is developed with Ubuntu 20.04 LTS and Python 3.7.
+The code is developed with Ubuntu 22.04 LTS and Python 3.8, To setup python3.8, the following steps can be used:
+
+1. Download the Miniconda Installer
+   
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+```
+
+2. Verify the Installer (Optional but recommended)
+
+```bash
+sha256sum Miniconda3-latest-Linux-x86_64.sh
+```
+
+3. Run the Installer
+
+```bash
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+4. Activate Conda
+
+```bash
+source ~/.bashrc
+```
+
+5. Apply these commands
+
+```bash
+conda create -n race python=3.8
+```
+
+```bash
+conda activate race
+```
+
+```bash
+python3 -m pip install -r requirements.txt --user
+```
+
+```bash
+sudo apt install python3-tk
+```
+
+```bash
+sudo apt install python3-dev
+```
+
+```bash
+pip uninstall quadprog -y
+```
+
+```bash
+pip uninstall Cython -y
+```
+
+```bash
+rm -rf ~/.cache/pip 
+```
+
+```bash
+pip install Cython==0.29.14
+```
+
+```bash
+pip install --no-binary=quadprog --force-reinstall quadprog==0.1.7
+```
+
+```bash
+python3 -c "import quadprog; print(quadprog.__file__)"
+```
+
 
 ### Solutions for possible installation problems (Windows)
 * `cvxpy`, `cython` or any other package requires a `Visual C++ compiler` -> Download the build tools for Visual Studio

@@ -38,9 +38,9 @@ plot_opts = {"mincurv_curv_lin": False,         # plot curv. linearization (orig
              "mintime_plots": False}            # plot states, controls, friction coeffs etc. (mintime only)
 
 # select track file (including centerline coordinates + track widths) --------------------------------------------------
-# file_paths["track_name"] = "rounded_rectangle"                              # artificial track
+#file_paths["track_name"] = "rounded_rectangle"                              # artificial track
 # file_paths["track_name"] = "handling_track"                                 # artificial track
-file_paths["track_name"] = "berlin_2018"                                    # Berlin Formula E 2018
+file_paths["track_name"] = "ref"                                    # Berlin Formula E 2018
 # file_paths["track_name"] = "modena_2019"                                    # Modena 2019
 
 # set import options ---------------------------------------------------------------------------------------------------
@@ -271,6 +271,13 @@ if opt_type == 'mincurv':
                                               plot_debug=plot_opts["mincurv_curv_lin"])[0]
 
 elif opt_type == 'mincurv_iqp':
+    print("Debugging input parameters for opt_min_curv:")
+    print("Vehicle width (width_opt):", pars["optim_opts"]["width_opt"])
+    print("Minimum iterations (iqp_iters_min):", pars["optim_opts"]["iqp_iters_min"])
+    print("Curvature error allowed (iqp_curverror_allowed):", pars["optim_opts"]["iqp_curverror_allowed"])
+    print("Curvature limit (kappa_bound):", pars["veh_params"]["curvlim"])
+    print("Reference track dimensions:", reftrack_interp.shape)
+
     alpha_opt, reftrack_interp, normvec_normalized_interp = tph.iqp_handler.\
         iqp_handler(reftrack=reftrack_interp,
                     normvectors=normvec_normalized_interp,
